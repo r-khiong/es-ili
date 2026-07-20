@@ -1,13 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Archivo, Inter, JetBrains_Mono } from "next/font/google";
-import type { ReactNode } from "react";
 import { DemoEntryButton } from "@/components/story/demo-entry-button";
 
 // RSVP-9 root landing, Paper Light editorial (RJ mockup 2026-07-17).
 // Typography is landing-only: Archivo / Inter / JetBrains Mono load in-page so
 // layout.tsx (and the product routes under it) keep their own font stack.
-// Copy is locked to the mockup — do not reword without a PjM decision.
+// Copy is locked to the approved final draft (PjM, 2026-07-20) — do not
+// reword without a PjM decision.
 const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrainsMono = JetBrains_Mono({
@@ -26,8 +26,8 @@ const REPO_URL = "https://github.com/r-khiong/rsvp-demo";
 const GITHUB_PROFILE_URL = "https://github.com/r-khiong";
 const LINKEDIN_URL = "https://www.linkedin.com/in/renatajiang";
 
-// PjM decision 2026-07-17: PWA chip replaced with TypeScript (project ships no
-// PWA; recruiter-facing claims must stay factual).
+// PjM decision 2026-07-17, reaffirmed 2026-07-20: PWA chip replaced with
+// TypeScript (project ships no PWA; recruiter-facing claims must stay factual).
 const STACK_CHIPS = ["Next.js", "TypeScript", "Supabase", "Netlify"];
 
 const ROLES = [
@@ -56,37 +56,22 @@ const ROLES = [
 interface FlowRow {
   idx: string;
   kicker: string;
-  kickerCn: string;
-  title: ReactNode;
-  desc: ReactNode;
+  title: string;
+  desc: string;
   badge: string;
   src: string;
   alt: string;
   flip: boolean;
 }
 
-const em = (text: string) => (
-  <em className="font-medium not-italic text-[#141412]">{text}</em>
-);
-
+// PjM decision 2026-07-20: 03 desc uses the non-email wording — email
+// notification is unshipped Phase 2 scope; the email copy lands with it.
 const FLOW: FlowRow[] = [
   {
     idx: "01",
     kicker: "Register",
-    kickerCn: "訪客報名",
-    title: (
-      <>
-        把 8 條 story
-        <br />
-        砍到 4 條。
-      </>
-    ),
-    desc: (
-      <>
-        MVP 只留能證明「產品成立」的最短路徑,其餘全進 Phase 2。{em("做小、做完")}
-        ,而不是做多、做半。
-      </>
-    ),
+    title: "MVP 證明產品成立。",
+    desc: "報名 → 審核 → 入場憑證。4 個 sprint 完成 MVP 上線，其餘需求進 backlog 持續迭代。",
     badge: "Scope decision",
     src: "/story/state-1.png",
     alt: "Register page — split-screen registration form",
@@ -95,21 +80,9 @@ const FLOW: FlowRow[] = [
   {
     idx: "02",
     kicker: "Status link",
-    kickerCn: "自查狀態",
-    title: (
-      <>
-        每位訪客
-        <br />
-        只看得到自己。
-      </>
-    ),
-    desc: (
-      <>
-        用 {em("token-scoped RPC")}{" "}
-        發放專屬連結——訪客查得到自己的狀態,卻撈不走整份名單。隱私是設計出來的,不是補上去的。
-      </>
-    ),
-    badge: "Privacy by design",
+    title: "三方管理誤差，名單狀態斷層。",
+    desc: "客戶、主辦方、參加者三方名單，收束為單一資訊窗口，資訊即時、正確、透明。",
+    badge: "Single source of truth",
     src: "/story/state-2.png",
     alt: "Status page — approved registration with check-in QR code",
     flip: true,
@@ -117,22 +90,9 @@ const FLOW: FlowRow[] = [
   {
     idx: "03",
     kicker: "Batch review",
-    kickerCn: "批次審核",
-    title: (
-      <>
-        推翻自己
-        <br />
-        三天前的設計。
-      </>
-    ),
-    desc: (
-      <>
-        原本做了逐列 inline 審核,實測後整組改成 {em("batch-only")}
-        ——一次處理一批更貼近真實場景。
-        {em("承認前一版做錯,比守著它更省成本。")}
-      </>
-    ),
-    badge: "Self-correction",
+    title: "多筆審閱，狀態即時同步。",
+    desc: "批次 approve / reject，每位訪客的狀態連結即時更新。",
+    badge: "Ops efficiency",
     src: "/story/state-3.png",
     alt: "Admin console — read-only demo of the registrations table",
     flip: false,
@@ -202,14 +162,8 @@ export default function Home() {
                 </span>
                 -Demo
               </h1>
-              <p className="mt-[30px] text-balance text-[clamp(20px,2.35vw,29px)] font-[450] leading-[1.32] tracking-[-0.01em] md:max-w-[20ch]">
-                Event RSVPs,
-                <br />
-                <b className="font-semibold">without the spreadsheet chaos.</b>
-                <br />
-                一個從真實痛點長出來、
-                <br />
-                而且已經上線的產品。
+              <p className="mt-[30px] text-balance text-[clamp(20px,2.35vw,29px)] font-[450] leading-[1.32] tracking-[-0.01em]">
+                Manage event RSVPs without the spreadsheet chaos.
               </p>
               <ul className="mt-[34px] flex flex-wrap gap-x-2.5 gap-y-2">
                 {STACK_CHIPS.map((chip) => (
@@ -243,11 +197,68 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Role band */}
+        {/* Core Flow × Decisions */}
         <section
-          aria-labelledby="owned-heading"
-          className="border-b border-black/[0.07] py-[66px]"
+          aria-labelledby="flow-heading"
+          className="border-b border-black/[0.07] pb-[64px] pt-[82px]"
         >
+          <div className={WRAP}>
+            <h2
+              id="flow-heading"
+              className={`${DISP} mb-2 text-[clamp(34px,5.2vw,60px)] font-extrabold leading-none tracking-[-0.03em]`}
+            >
+              Core Flow &times; Decisions
+            </h2>
+            <p className="mb-[46px] max-w-[46ch] text-[17px] leading-[1.5] text-[#6C6C66] md:mb-[66px]">
+              拆解活動現場真實情境，提出核心痛點。
+            </p>
+
+            <ul>
+              {FLOW.map((row) => (
+                <li
+                  key={row.idx}
+                  className="grid items-center gap-[26px] border-black/[0.07] py-[44px] first:pt-0 md:grid-cols-2 md:gap-[60px] [&+&]:border-t"
+                >
+                  <div className={row.flip ? "min-w-0 md:order-2" : "min-w-0"}>
+                    <BrowserFrame src={row.src} alt={row.alt} />
+                  </div>
+                  <div className={row.flip ? "md:order-1" : undefined}>
+                    <p
+                      className={`${MONO} mb-5 flex items-center gap-3 text-xs tracking-[0.16em] text-[#9A9A93]`}
+                    >
+                      {row.idx}
+                      <span
+                        aria-hidden="true"
+                        className="h-px flex-1 bg-black/[0.14]"
+                      />
+                    </p>
+                    <p
+                      className={`${MONO} mb-3.5 text-[12.5px] tracking-[0.05em] text-[#6C6C66]`}
+                    >
+                      {row.kicker}
+                    </p>
+                    <h3
+                      className={`${DISP} mb-[18px] text-balance text-[clamp(24px,3vw,37px)] font-bold leading-[1.08] tracking-[-0.02em]`}
+                    >
+                      {row.title}
+                    </h3>
+                    <p className="mb-[22px] max-w-[34ch] text-[16.5px] leading-[1.62] text-[#6C6C66]">
+                      {row.desc}
+                    </p>
+                    <p
+                      className={`${MONO} inline-block rounded-md border border-black/[0.14] bg-black/[0.04] px-[11px] py-1.5 text-[11px] uppercase tracking-[0.16em]`}
+                    >
+                      {row.badge}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* Role band */}
+        <section aria-labelledby="owned-heading" className="py-[66px]">
           <div className={WRAP}>
             <h2
               id="owned-heading"
@@ -258,9 +269,9 @@ export default function Home() {
             <p
               className={`${DISP} max-w-[22ch] text-balance text-[clamp(26px,3.6vw,44px)] font-semibold leading-[1.14] tracking-[-0.02em]`}
             >
-              把多年活動現場的 RSVP 混亂,
-              <br />
-              收斂成一個可交付的產品。
+              多年活動現場 RSVP
+              實戰經驗，收斂成可交付的產品。從產品定義到功能取捨以及優先序安排，並以
+              SDLC 框架推進。
             </p>
             <dl className="mt-[52px] grid border-t border-black/[0.14] md:grid-cols-2">
               {ROLES.map((role, i) => (
@@ -287,66 +298,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Core Flow × Decisions */}
-        <section
-          aria-labelledby="flow-heading"
-          className="pb-[30px] pt-[82px]"
-        >
-          <div className={WRAP}>
-            <h2
-              id="flow-heading"
-              className={`${DISP} mb-2 text-[clamp(34px,5.2vw,60px)] font-extrabold leading-none tracking-[-0.03em]`}
-            >
-              Core Flow &times; Decisions
-            </h2>
-            <p className="mb-[46px] max-w-[46ch] text-[17px] leading-[1.5] text-[#6C6C66] md:mb-[66px]">
-              三個核心畫面,三個真實的產品決策。每一格不是功能清單,是一次取捨。
-            </p>
-
-            <ul>
-              {FLOW.map((row) => (
-                <li
-                  key={row.idx}
-                  className="grid items-center gap-[26px] border-black/[0.07] py-[44px] first:pt-0 md:grid-cols-2 md:gap-[60px] [&+&]:border-t"
-                >
-                  <div className={row.flip ? "min-w-0 md:order-2" : "min-w-0"}>
-                    <BrowserFrame src={row.src} alt={row.alt} />
-                  </div>
-                  <div className={row.flip ? "md:order-1" : undefined}>
-                    <p
-                      className={`${MONO} mb-5 flex items-center gap-3 text-xs tracking-[0.16em] text-[#9A9A93]`}
-                    >
-                      {row.idx}
-                      <span
-                        aria-hidden="true"
-                        className="h-px flex-1 bg-black/[0.14]"
-                      />
-                    </p>
-                    <p
-                      className={`${MONO} mb-3.5 text-[12.5px] tracking-[0.05em] text-[#6C6C66]`}
-                    >
-                      {row.kicker} · <span className="text-[#141412]">{row.kickerCn}</span>
-                    </p>
-                    <h3
-                      className={`${DISP} mb-[18px] text-balance text-[clamp(24px,3vw,37px)] font-bold leading-[1.08] tracking-[-0.02em]`}
-                    >
-                      {row.title}
-                    </h3>
-                    <p className="mb-[22px] max-w-[34ch] text-[16.5px] leading-[1.62] text-[#6C6C66]">
-                      {row.desc}
-                    </p>
-                    <p
-                      className={`${MONO} inline-block rounded-md border border-black/[0.14] bg-black/[0.04] px-[11px] py-1.5 text-[11px] uppercase tracking-[0.16em]`}
-                    >
-                      {row.badge}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
         {/* CTA */}
         <section aria-label="Live demo entry" className="mt-[34px] border-t border-black/[0.07] pb-[30px] pt-[60px]">
           <div className={WRAP}>
@@ -359,17 +310,12 @@ export default function Home() {
               </Link>
               <DemoEntryButton />
             </div>
+            {/* PjM decision 2026-07-20: non-email footnote until email
+                notification (Phase 2) actually ships. */}
             <p className="mt-[26px] max-w-[60ch] text-sm leading-[1.55] text-[#6C6C66]">
               現場報到{" "}
               <b className="font-semibold text-[#141412]">On-site check-in</b>{" "}
-              已排入 Phase 2。QR 介面已預留{" "}
-              <code
-                className={`${MONO} rounded bg-black/[0.04] px-1.5 py-0.5 text-xs text-[#141412]`}
-              >
-                token
-              </code>{" "}
-              結構,後端零改動即可接上——
-              <span className="text-[#9A9A93]">先驗證主流程,再擴功能。</span>
+              已排入 Phase 2。
             </p>
           </div>
         </section>
