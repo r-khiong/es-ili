@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Archivo, Inter, JetBrains_Mono } from "next/font/google";
 import { DemoEntryButton } from "@/components/story/demo-entry-button";
+import { SITE_HOST } from "@/lib/site";
 
 // RSVP-9 root landing, Paper Light editorial (RJ mockup 2026-07-17).
 // Typography is landing-only: Archivo / Inter / JetBrains Mono load in-page so
@@ -22,7 +23,7 @@ const DISP =
 const MONO = "font-[family-name:var(--font-jbm),ui-monospace,monospace]";
 const WRAP = "mx-auto w-full max-w-[1120px] px-[22px] md:px-[34px]";
 
-const REPO_URL = "https://github.com/r-khiong/rsvp-demo";
+const REPO_URL = "https://github.com/r-khiong/rsvp";
 const GITHUB_PROFILE_URL = "https://github.com/r-khiong";
 const LINKEDIN_URL = "https://www.linkedin.com/in/renatajiang";
 
@@ -186,7 +187,7 @@ export default function Home() {
                   aria-hidden="true"
                   className="h-[7px] w-[7px] rounded-full bg-[#3fbf6a] shadow-[0_0_0_4px_rgba(63,191,106,0.22)]"
                 />
-                Live demo · r-khiong-rsvp-demo.netlify.app
+                Live demo · {SITE_HOST}
               </Link>
             </div>
             <BrowserFrame
@@ -355,7 +356,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className={`${MONO} text-xs tracking-[0.02em] transition-colors hover:text-[#141412]`}
           >
-            Source · r-khiong/rsvp-demo
+            Source · r-khiong/rsvp
           </a>
         </div>
       </footer>
