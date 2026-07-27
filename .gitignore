@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# local working assets (not part of the product)
+Jira screenshot/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
