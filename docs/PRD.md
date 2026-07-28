@@ -1,16 +1,15 @@
 # RSVP — Product Requirements Document (Phase 1 MVP)
 
 > **Author:** Renata Jiang (r.khiong)
-> **Created:** 2026-04-16 · **Last updated:** 2026-07-10
+> **Created:** 2026-04-16 · **Last updated:** 2026-07-28
 > **Status:** Active
-> **Version:** 0.4 (supersedes v0.3 / v0.2 / v0.1)
+> **Version:** 0.5 (supersedes v0.4 / v0.3 / v0.2 / v0.1)
 
-> **What changed in v0.4 (see full changelog §9):** RSVP-4 and RSVP-5 marked **Done** and
-> realigned to as-built (batch-only pivot of 2026-06-09 documented; `registrations.name`
-> column; no pagination in MVP); RSVP-6 **moved to Phase 2** (PjM decision 2026-07-07);
-> two new stories added — **RSVP-7 Story Landing** and **RSVP-8 Read-only Admin Demo**
-> (reviewer-facing visibility layer); product docs moved into the repo (`docs/`);
-> security model extended for the demo user.
+> **What changed in v0.5 (see full changelog §9):** **RSVP-7 realigned to Jira** — the key now
+> carries **Email Notifications** (Phase 1), and the former *RSVP-7 Story Landing* story is
+> **removed as superseded**: the landing is a non-story track (descriptive branch), not a user
+> story (decision 2026-07-22). **RSVP-8 marked Done.** Email moved out of Non-Goals and out of
+> the Phase 2 backlog accordingly (SMS stays deferred).
 
 ---
 
@@ -31,7 +30,7 @@ RSVP is a lightweight event registration and guest-management tool. Organizers c
 
 ### Portfolio Layer (added in v0.4)
 
-This repo also serves as a PM portfolio artifact. Its primary reviewer persona (hiring managers / interviewers) could not previously see the product's core value — the admin workflow and the decision trail — from the public URL. RSVP-7/8 add a **visibility layer** for that persona without changing the product itself.
+This repo also serves as a PM portfolio artifact. Its primary reviewer persona (hiring managers / interviewers) could not previously see the product's core value — the admin workflow and the decision trail — from the public URL. A **visibility layer** was added for that persona without changing the product itself: **RSVP-8** (read-only admin demo) plus the **root landing** — the latter tracked as a non-story descriptive branch rather than a user story (decision 2026-07-22; see §9).
 
 ---
 
@@ -45,7 +44,8 @@ This repo also serves as a PM portfolio artifact. Its primary reviewer persona (
 | G2 | Organizers can review and approve/reject in batch | Organizer can process 50+ registrations in under 5 minutes | ✅ Shipped |
 | G3 | Approved attendees receive a unique QR code | QR renders on the status page immediately after approval | ✅ Shipped |
 | G4 | Organizers can verify and check in attendees on-site | Organizer can mark an approved attendee as checked-in from the admin view | ↪ Moved to Phase 2 (2026-07-07); QR verification-ready state shipped via RSVP-5 |
-| G5 *(v0.4)* | Reviewers can grasp the product and its decision trail from one URL | A non-technical reader states the product's purpose + two key decisions within 3 minutes; admin workflow visible without requesting credentials | 🔜 RSVP-7/8 |
+| G5 *(v0.4)* | Reviewers can grasp the product and its decision trail from one URL | A non-technical reader states the product's purpose + two key decisions within 3 minutes; admin workflow visible without requesting credentials | 🔄 In progress — RSVP-8 ✅ Done; root landing on the non-story track (§9) |
+| G6 *(v0.5)* | Attendees learn the review outcome without polling the status page | An approved / rejected attendee receives an email carrying the decision and their status-page link | 🔜 RSVP-7 |
 
 ### Non-Goals (Phase 1)
 
@@ -53,7 +53,9 @@ This repo also serves as a PM portfolio artifact. Its primary reviewer persona (
 |------|-----------|
 | Business card file upload | Dropped from MVP (v0.3) — no storage/RLS overhead; reconsider in Phase 2 if a real need surfaces |
 | Camera-based QR scanner | On-site verification deferred with RSVP-6 to Phase 2; QR already encodes the token status URL, so the scanner reuses it without backend changes |
-| Email / SMS notifications | Depends on third-party integration; deferred to Phase 2 (Gmail SMTP assessed as preferred over Resend before deferral) |
+| ~~Email notifications~~ *(promoted in v0.5)* | **No longer a Non-Goal** — promoted into Phase 1 as **RSVP-7** (§4). The Gmail-SMTP-over-Resend assessment made before the original deferral carries forward |
+| SMS notifications | Still deferred to Phase 2 — needs a paid gateway and per-country number handling; email covers the notification need for this audience |
+| Per-record notification resend | *(v0.5)* Deferred to **Phase 1.5** per RSVP-7 trade-off (b): a failed send is logged only, with no operator-facing retry in this version |
 | Automated filtering rules | MVP uses manual review; rule-based filtering needs a TA-definition UI; Phase 2 |
 | Free-text search in dashboard | Status filter is sufficient for MVP; keyword search deferred to Phase 2 |
 | Pagination in dashboard | *(realigned in v0.4)* Not built in MVP — dataset is small; select-all scopes to the rendered page. Pagination (50/page) moves to Phase 2 with search |
@@ -172,21 +174,40 @@ This repo also serves as a PM portfolio artifact. Its primary reviewer persona (
 
 ---
 
-### RSVP-7 — Story Landing (Reviewer) *(added in v0.4)*
+### RSVP-7 — Email Notifications (Attendee) *(realigned to Jira in v0.5)*
 
-> **As a** Reviewer (hiring manager / interviewer), **I want** a single URL that explains the problem, the key decisions, and the full artifact chain in under 3 minutes, **so that** I can judge the author's PM judgment without asking for anything.
+> **As an** Attendee, **I want to** be emailed when my registration is approved or rejected, **so that** I learn the outcome without repeatedly re-opening my status page.
 
-**Acceptance Criteria** *(updated 2026-07-11 to the approved Figma V3 design)*
-- Root `/` replaces the redirect with a one-page narrative per Figma `Story landing / v3`: hero (tagline + single CTA `Enter RSVP` → `/register`) → About (heading + 3 pain-point pills + Why/How two-column) → integrated **flow × decision showcase** → artifact chips + division-of-labor tags → footer with `Back to top`
-- Showcase: product screenshots as base images with callout annotations pairing each flow step with its decision — 4 pairs (Register × scope cut · Status link × token RPC · Batch review × batch-only pivot · QR status × honest sprint close), advanced by scroll; entry buttons `Open live demo` (→ `/register`) and `Enter admin demo (read-only)` (→ RSVP-8 action) below; on-site check-in = **Phase 2** strip
-- Motion: CSS fade/slide-in triggered by IntersectionObserver **only** — documented §8.6 exception; no sticky scroll-jacking
-- Logo unified to "RSVP" on the story page **and** in the product UI (register / admin headers)
-- Language: Chinese body copy, English UI terms (per OQ-9)
-- Complies with remaining aesthetic invariants (CLAUDE.md §8.6); mobile 375px / desktop 1280px verified (storyboard pairs stack vertically on mobile)
-- Existing routes (`/register`, `/status/[token]`, `/admin/*`) unaffected
-- 3-minute test: a non-technical reader can state the product's purpose + two key decisions
+> **Note on this key:** RSVP-7 previously carried a *Story Landing* story in v0.4. That story is
+> **removed as superseded** — the root landing is tracked as a non-story descriptive branch, not a
+> user story (decision 2026-07-22). Jira is canonical for keys; this PRD follows Jira. See §9.
 
-**Status:** 📋 To Do — copy and layout locked via Figma V3 (2026-07-11); awaiting screenshot assets.
+**Acceptance Criteria** *(⚠️ drafted from the locked trade-offs below — reconcile against the Jira ticket before build)*
+- A notification email is sent on a **real status transition** (`pending → approved | rejected`), triggered from the existing write path (the `updateRegistrationsStatus` Server Action). The RSVP-4 idempotency rule governs sending too: a same-status no-op sends nothing
+- Email content: event name, the decision, and the attendee's `/status/{token}` link
+- **Send state is recorded as a nullable timestamp** on `registrations` (see §5) — the `status` enum is **not** extended, and the RSVP-4 dashboard change stays minimal
+- A send failure is **logged server-side only**; the status update still commits. The attendee-facing status page remains the source of truth for the decision
+- Reversing a decision (approve → reject or back) is a real transition and therefore sends again
+- Transport carries forward the pre-existing assessment: **Gmail SMTP preferred over Resend** (see `docs/decision-log.md`)
+- Single-event scope (see trade-off (a))
+- **Event information source: `TBD — pending PM decision`** — pending the resolution of how `events` and `lib/event.ts` divide responsibility
+
+**Trade-offs (locked by PjM)**
+```
+(a) 單一活動 scope —— schema 本身支援 multi-event
+    （events 表 + registrations.event_id FK），
+    但 UI 與本版功能刻意只涵蓋單一活動。
+    Multi-event 管理介面屬 Phase 2。
+
+(b) 無單筆補寄 —— 失敗只 log，補寄能力列 Phase 1.5
+
+(c) 不擴 status enum —— 以 nullable timestamp 表達寄送狀態，
+    換取最小 migration 與最小 RSVP-4 dashboard 改動
+```
+
+**Out of scope (this story):** per-record resend → Phase 1.5 (trade-off b) · SMS → Phase 2 · send-status column surfaced in the dashboard UI → Phase 2 · multi-event templating → Phase 2 (trade-off a) · registration-received (pre-decision) confirmation email
+
+**Status:** 📋 To Do.
 
 ---
 
@@ -204,7 +225,7 @@ This repo also serves as a PM portfolio artifact. Its primary reviewer persona (
 
 **Out of scope (this story):** interactive writes + data reset (Phase 2 sandbox) · separate demo dataset (reuses `supabase/seed.sql`)
 
-**Status:** 📋 To Do.
+**Status:** ✅ Done — merged 2026-07-14. `signInAsDemo` Server Action (`app/admin/login/actions.ts`), demo banner + disabled batch bar (`app/admin/registrations/page.tsx`), restrictive RLS carve-out (migration `20260711000000_rsvp8_demo_admin_readonly.sql`).
 
 ---
 
@@ -234,9 +255,16 @@ registrations
   remark            text  NULL    -- organizer-side note (read-only in UI; inline edit → Phase 2)
   created_at        timestamptz
   status_updated_at timestamptz NULL  -- written only on real status transitions (app-level)
+  notified_at       timestamptz NULL  -- RSVP-7 (planned): last successful decision email.
+                                      -- NULL = never sent OR last send failed. Send state is
+                                      -- carried by this nullable timestamp instead of new
+                                      -- status values — see RSVP-7 trade-off (c)
 
   UNIQUE (event_id, email)
 ```
+> `notified_at` is **specified, not yet built** — it lands with RSVP-7. Column name is provisional
+> until the migration is authored.
+
 Status transitions (live): `pending → approved | rejected` (reversible).
 Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 
@@ -257,8 +285,9 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | M0 — Discovery / Setup | PRD, user flow, Jira backlog, environment, first push | Sprint 0 (4/22–5/8) ✅ |
 | M1 — Build (paused mid-flight) | RSVP-3, RSVP-4 started | Sprint v2 (5/13–5/22), closed honestly at 0/4 shipped ✅ |
 | M2 — Recovery | RSVP-3 ✅ (6/3, RLS hardened) · RSVP-4 ✅ (6/11+) · RSVP-5 ✅ (accepted 7/7) · RSVP-6 ↪ Phase 2 (7/7) | Sprint v3 (6/2–6/16) + spillover, closed 7/7 |
-| M3 — Ship | Netlify production deploy, repo public, README | ✅ Live (`r-khiong-rsvp-demo.netlify.app`) |
-| M4 — Visibility *(v0.4)* | RSVP-7 story landing + RSVP-8 read-only demo + docs-in-repo + README sync | July 2026, then **freeze** (changes only on interview feedback) |
+| M3 — Ship | Netlify production deploy, repo public, README | ✅ Live (`r-khiong-rsvp.netlify.app`) |
+| M4 — Visibility *(v0.4; scope restated in v0.5)* | RSVP-8 read-only demo ✅ + root landing (non-story track, in progress) + docs-in-repo ✅ + README sync ✅ | July 2026, then **freeze** (changes only on interview feedback) |
+| M5 — Notifications *(v0.5)* | RSVP-7 email notifications | Not scheduled — sits outside the M4 freeze; scheduled only if interview feedback calls for it |
 
 > Sprint v2 was paused by a pre-scheduled trip (5/23–5/31). Rather than retroactively
 > extending its dates (a ScrumBut anti-pattern that distorts velocity), it was closed
@@ -284,11 +313,19 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 
 ---
 
-## 8. Phase 2+ Backlog
+## 8. Phase 1.5 / Phase 2+ Backlog
+
+### Phase 1.5 *(added in v0.5 — follows directly from RSVP-7)*
+
+- Per-record notification resend (operator-triggered retry for a failed send). RSVP-7 ships with
+  log-only failure handling per trade-off (b); `notified_at` already carries the state this needs
+
+### Phase 2+
 
 - On-site check-in (RSVP-6 scope: manual check-in + `checked_in`/`checked_in_at` + visually distinct rows; then camera QR scanner — both reuse the token status URL)
 - Interactive demo sandbox (demo user writes + data reset + rate limit)
-- Email / SMS notification on status change (Gmail SMTP assessed > Resend)
+- SMS notification on status change *(email portion promoted to Phase 1 as RSVP-7 in v0.5)*
+- Send-status column surfaced in the admin dashboard (RSVP-7 writes `notified_at` but does not display it)
 - Free-text / keyword search + pagination (50/page) in admin dashboard
 - Automated TA filtering rules
 - Inline Remark editing
@@ -308,6 +345,7 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | v0.2 | 2026-05-07 | Supabase Auth added to MVP; scan page brought into MVP; Jira board + AC built |
 | v0.3 | 2026-06-06 | Dashboard columns realigned to built schema; Business Card upload removed; organizer auth resolved to Supabase Auth; on-site check-in confirmed manual (scanner → Phase 1.5); status filter kept, free-text search → Phase 2; multi-event clarified (schema-ready, single-event UI); idempotent / reversible batch rule and `select-all = current page` documented |
 | **v0.4** | **2026-07-10** | RSVP-4/5 marked **Done**, AC realigned to as-built: **batch-only pivot (2026-06-09)** documented — per-row buttons removed; `registrations.name` (not `full_name`); **no pagination in MVP** (moved to Phase 2). RSVP-6 **moved to Phase 2** (2026-07-07). Added **Reviewer persona**, **G5**, **RSVP-7 Story Landing**, **RSVP-8 Read-only Admin Demo**. Security model: per-role grant lesson (7/7) + demo-user restrictive carve-out. Docs moved into repo (`docs/`); OQ-9/10/11 resolved. M4 Visibility milestone + post-M4 freeze |
+| **v0.5** | **2026-07-28** | **RSVP-7 realigned to Jira as Email Notifications.** The v0.4 *RSVP-7 Story Landing* story is **removed as superseded** — the root landing is a **non-story track (descriptive branch)**, not a user story (decision **2026-07-22**); Jira is canonical for keys and this PRD follows Jira. Trade-offs (a) single-event scope / (b) no per-record resend, failures log-only → Phase 1.5 / (c) no `status` enum extension, send state as a nullable timestamp — locked by PjM. **RSVP-8 → Done** (merged 2026-07-14). Email removed from §2 Non-Goals and from the §8 backlog (**SMS stays deferred**); new **Phase 1.5** bucket for resend. Added **G6**, **M5 — Notifications**, and provisional `registrations.notified_at` to the §5 data model. *Supersedes draft revisions discussed 2026-07-22/23 (chat-side); remaining content port tracked separately.* Open: RSVP-7 AC awaits reconciliation against the Jira ticket; event information source `TBD — pending PM decision` |
 
 ---
 
@@ -315,6 +353,7 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 
 > Copy the block under each key into the Jira ticket's Acceptance Criteria field.
 > RSVP-3/5 blocks unchanged from v0.3 (shipped as specced). RSVP-4 updated to as-built. RSVP-6 parked in Phase 2 backlog.
+> RSVP-7 rewritten in v0.5 for the Email Notifications realignment — it is a **draft**, not yet reconciled with the Jira ticket.
 
 **RSVP-4 — Review & Batch Approval (as-built)**
 ```
@@ -337,19 +376,26 @@ Out of Scope:
 * Concurrent editing conflict resolution → Phase 2
 ```
 
-**RSVP-7 — Story Landing (V3)**
+**RSVP-7 — Email Notifications** *(draft — reconcile against the Jira ticket before build)*
 ```
-* Root / replaces redirect with one-page narrative per Figma "Story landing / v3":
-  hero (tagline + single CTA "Enter RSVP" → /register) → About (3 pain pills + Why/How 2-col)
-  → flow × decision showcase → artifact chips + division tags → footer with Back to top
-* Showcase: screenshot base + callout annotations, 4 flow×decision pairs, scroll-advanced;
-  Open live demo (→ /register) + Enter admin demo (read-only) buttons; check-in = Phase 2 strip
-* Motion: CSS fade/slide-in via IntersectionObserver only (documented §8.6 exception)
-* Logo unified to "RSVP" (story page + product UI headers)
-* Chinese body, English UI terms
-* Remaining aesthetic invariants respected; mobile 375px (pairs stack) / desktop 1280px verified
-* Existing routes unaffected
-* 3-minute test passed by a non-technical reader (purpose + two decisions)
+* Notification email sent on a REAL status transition (pending → approved | rejected),
+  triggered from the existing updateRegistrationsStatus Server Action
+* RSVP-4 idempotency governs sending: same-status no-op sends nothing.
+  A reversal (approve → reject or back) is a real transition and sends again
+* Email content: event name, decision, attendee's /status/{token} link
+* Send state = nullable timestamp on registrations (notified_at, provisional name).
+  status enum NOT extended; RSVP-4 dashboard change stays minimal
+* Send failure: logged server-side only; the status update still commits
+* Transport: Gmail SMTP (preferred over Resend — see docs/decision-log.md)
+* Single-event scope
+* Event information source: TBD — pending PM decision
+
+Out of Scope:
+* Per-record resend → Phase 1.5
+* SMS → Phase 2
+* Send-status column surfaced in dashboard UI → Phase 2
+* Multi-event templating → Phase 2
+* Registration-received (pre-decision) confirmation email
 ```
 
 **RSVP-8 — Read-only Admin Demo**
