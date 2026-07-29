@@ -58,6 +58,7 @@
 | 日期 | 修訂 |
 |---|---|
 | 2026-07-28 | Email notifications promoted from Phase 2 backlog to RSVP-7 (Sprint v5). Supersedes the earlier downgrade entry. Rationale: guest access continuity after approval; see PRD v0.5 §4. |
+| 2026-07-29 | 修正「Grant 是 per-role 的」條目的第二次復發。`/register` 用的是 session-aware 的 `createBrowserClient`，所以帶著 admin session 的瀏覽器會以 `authenticated` 身分送出報名，而該 role 從未被 grant `SELECT ON events` / `INSERT ON registrations` → 42501。**改用 code 修法（新增 anon-only client）而非 SQL 修法（grant `authenticated`）**：後者會讓 RSVP-8 的 read-only demo admin 取得 INSERT 權限，破壞該保證，因為它的 restrictive policy 只擋 UPDATE/DELETE。同時把錯誤代碼帶進 error UI —— 這次故障之所以拖 12 天，正是因為 generic 文案讓「權限錯誤」和「連線錯誤」長得一模一樣。 |
 
 ---
 
