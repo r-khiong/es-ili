@@ -25,9 +25,9 @@ export function DemoEntryButton() {
         type="button"
         disabled={isPending}
         onClick={handleClick}
-        className="font-mono inline-flex items-center rounded-[9px] border border-black/30 px-[26px] py-[15px] text-[13px] tracking-[0.02em] text-[#141412] transition-colors hover:border-[#141412] disabled:cursor-not-allowed disabled:opacity-60"
+        className="font-mono inline-flex items-center rounded-lg border border-[#D4D4D4] px-5 py-[11px] text-[13px] tracking-[0.04em] text-[#0A0A0A] transition-colors hover:border-[#0A0A0A] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isPending ? "Entering demo..." : "Enter admin demo · read-only"}
+        {isPending ? "Entering demo..." : "Admin view-only →"}
       </button>
       {error && (
         <p role="alert" className="text-sm text-destructive">
