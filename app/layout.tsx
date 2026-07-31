@@ -50,9 +50,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // data-scroll-behavior opts into the smooth scrolling globals.css declares.
+  // Without it Next forces instant scroll on route transitions and warns; the
+  // landing's About link is an in-page anchor that wants the smooth jump.
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${archivo.variable} ${inter.variable} ${geistMono.variable} ${notoSansTC.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
