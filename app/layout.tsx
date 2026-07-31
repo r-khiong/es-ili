@@ -1,28 +1,46 @@
 import type { Metadata } from "next";
-import { DM_Sans, Geist_Mono, Noto_Sans_TC } from "next/font/google";
+import { Archivo, Geist_Mono, Inter, Noto_Sans_TC } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-// EN skeleton. Landing-page-specific per the RSVP-9 redesign spec — this
-// deviates from the CLAUDE.md §8.6 Geist lock, which governs the product UI.
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+// Single source for every font in the project (RSVP-9). Pages must not call
+// next/font themselves — a per-page load ships a second copy of the same family
+// and splits the CSS-variable namespace, which is how this repo ended up with
+// seven webfonts across three files.
+
+// Display face: hero, section headings, wordmark caption.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
 });
 
-// CJK fallback. DM Sans has no CJK glyphs, so Chinese body copy must reach
-// Noto Sans TC via the font stack (see globals.css --font-sans).
-const notoSansTC = Noto_Sans_TC({
-  variable: "--font-noto-sans-tc",
+// Body face, and the value behind --font-sans (see globals.css).
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
 });
 
+// Eyebrows, labels, timestamps, table headers.
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
+// CJK fallback. Archivo and Inter carry no CJK glyphs, so Chinese copy reaches
+// Noto Sans TC through the font stack. preload is off on purpose: the subsets
+// option cannot describe a CJK character set, so Next would preload the full
+// Latin slice of three weights for text that is never above the fold.
+const notoSansTC = Noto_Sans_TC({
+  variable: "--font-noto-sans-tc",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
+  // Without metadataBase, Next resolves app/opengraph-image.png against
+  // http://localhost:3000 and every shared link ships a dead preview image.
+  metadataBase: new URL(SITE_URL),
   title: "RSVP",
   description: "Event RSVP & check-in system",
 };
@@ -35,7 +53,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${notoSansTC.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${archivo.variable} ${inter.variable} ${geistMono.variable} ${notoSansTC.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

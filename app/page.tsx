@@ -1,26 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Archivo, Inter, JetBrains_Mono } from "next/font/google";
 import { DemoEntryButton } from "@/components/story/demo-entry-button";
 import { SITE_HOST } from "@/lib/site";
 
 // RSVP-9 root landing, Paper Light editorial (RJ mockup 2026-07-17).
-// Typography is landing-only: Archivo / Inter / JetBrains Mono load in-page so
-// layout.tsx (and the product routes under it) keep their own font stack.
+// Fonts come from layout.tsx — this page loads none of its own.
 // Copy is locked to the approved final draft (PjM, 2026-07-20) — do not
 // reword without a PjM decision.
-const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo" });
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jbm",
-});
 
-// Archivo/Inter carry no CJK glyphs; Noto Sans TC (from layout.tsx) backfills
-// Chinese narrative copy before the system stack takes over.
-const DISP =
-  "font-[family-name:var(--font-archivo),var(--font-noto-sans-tc),sans-serif]";
-const MONO = "font-[family-name:var(--font-jbm),ui-monospace,monospace]";
+// Archivo/Inter carry no CJK glyphs; Noto Sans TC backfills Chinese narrative
+// copy before the system stack takes over.
+const DISP = "font-heading";
+const MONO = "font-mono";
 const WRAP = "mx-auto w-full max-w-[1120px] px-[22px] md:px-[34px]";
 
 const REPO_URL = "https://github.com/r-khiong/rsvp";
@@ -132,13 +123,7 @@ function BrowserFrame({ src, alt, priority = false }: BrowserFrameProps) {
 
 export default function Home() {
   return (
-    <div
-      className={`${archivo.variable} ${inter.variable} ${jetbrainsMono.variable} flex-1 bg-[#F3F3F1] text-[#141412]`}
-      style={{
-        fontFamily:
-          "var(--font-inter), var(--font-noto-sans-tc), system-ui, sans-serif",
-      }}
-    >
+    <div className="font-sans flex-1 bg-[#F3F3F1] text-[#141412]">
       <main>
         {/* Hero */}
         <section

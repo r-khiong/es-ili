@@ -26,6 +26,10 @@
 
 # local working assets (not part of the product)
 Jira screenshot/
+# Brand design package. Only the files the app actually serves are committed:
+# the three SVGs in public/brand/ and the icon set under app/ (favicon.ico,
+# apple-icon.png, opengraph-image.png). Source .ai/.pdf/.ttf stay out of git.
+esili-brand-kit/
 
 # debug
 npm-debug.log*
