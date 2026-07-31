@@ -50,6 +50,16 @@
 | status 配色單一對照常數 | `STATUS_STYLES` 一個常數管全部狀態視覺；`checked_in` 刻意不加，等 Phase 2 能顯示時才進 | 單一事實源防止散落的 hardcode；不為還沒上的功能預留死 code |
 | Hosting：Netlify（非決策點） | 早期文件並列 Vercel / Netlify 兩個候選，實際部署走 Netlify（git-linked auto deploy），為唯一 production 目標 | 兩者對本專案功能等價（git-linked、preview deploy、免費額度都夠用），不構成真正的 trade-off，故未做正式評選。記錄在此是為了誠實：不是每個選擇都是決策，假裝它是反而稀釋真決策的份量 |
 
+## 修訂 Amendments
+
+> 對上方既有條目的後續修正。**原條目一律保留不動** —— 它們是當時的真實決策紀錄，
+> 被推翻本身就是紀錄的一部分。
+
+| 日期 | 修訂 |
+|---|---|
+| 2026-07-28 | Email notifications promoted from Phase 2 backlog to RSVP-7 (Sprint v5). Supersedes the earlier downgrade entry. Rationale: guest access continuity after approval; see PRD v0.5 §4. |
+| 2026-07-29 | 修正「Grant 是 per-role 的」條目的第二次復發。`/register` 用的是 session-aware 的 `createBrowserClient`，所以帶著 admin session 的瀏覽器會以 `authenticated` 身分送出報名，而該 role 從未被 grant `SELECT ON events` / `INSERT ON registrations` → 42501。**改用 code 修法（新增 anon-only client）而非 SQL 修法（grant `authenticated`）**：後者會讓 RSVP-8 的 read-only demo admin 取得 INSERT 權限，破壞該保證，因為它的 restrictive policy 只擋 UPDATE/DELETE。同時把錯誤代碼帶進 error UI —— 這次故障之所以拖 12 天，正是因為 generic 文案讓「權限錯誤」和「連線錯誤」長得一模一樣。 |
+
 ---
 
 *對應：本表為 RJ_Interview_Materials 決策素材表的公開版。面試「講一個你做過的取捨」題型，優先取用粗體標記的兩則（batch-only pivot、Sprint v2 誠實關閉）。*

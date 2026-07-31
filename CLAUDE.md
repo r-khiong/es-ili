@@ -154,6 +154,7 @@ Scope：對應 user story（如 `rsvp-3`）或 module（如 `auth`、`admin`）�
 | Supabase 新 API key 命名（Publishable / Secret） | 不要用舊的 `anon` / `service_role` 命名 | .env.local 已對應 |
 | Server Component 預設 vs `'use client'` | form 與 interactive UI 才加 `'use client'` | 寫 page 時 default 不加 |
 | Supabase function/table grant 是 per-role：登入者（authenticated）與匿名（anon）跑同一頁行為可能不同 | 新增 RPC 時明確決定 grant 給哪些 role；「同一頁 A 開得了 B 開不了」先問「誰登入了」 | RSVP-5 已踩過：status RPC 只 grant anon，登入 admin 開 status 頁 42501 → 404，耗一整天（2026-07-06/07）；error 必須 log 不可吞成 404 |
+| `createBrowserClient`（`@supabase/ssr`）會自動讀 cookie session，把 `Authorization` 從 publishable key 換成登入者 JWT → **公開頁面會以 `authenticated` 身分打 DB**，而該 role 通常沒被 grant | 公開流程（register 等免登入頁）一律用 `lib/supabase/anon-client.ts`（`createClient` + `persistSession: false`），不要用 `lib/supabase/client.ts`；後者只給需要 session 的 admin login | 上一列 per-role 坑的**第二次復發**（2026-07-29）：`/register` 對匿名訪客正常、對開過 admin 的瀏覽器 42501，被 generic 文案吞了 12 天。判斷口訣：「只有我壞、別人好」= 先懷疑自己的 session |
 
 ### 5.2 工作流程
 

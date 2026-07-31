@@ -7,7 +7,7 @@ import { CalendarCheck } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { nanoid } from "nanoid";
-import { supabase } from "@/lib/supabase/client";
+import { anonSupabase } from "@/lib/supabase/anon-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,16 @@ import {
   registerFormSchema,
   type RegisterFormValues,
 } from "@/lib/validations/register";
+
+// Postgres unique_violation — the (event_id, email) constraint on registrations.
+const DUPLICATE_EMAIL_CODE = "23505";
+
+// Keeps the copy friendly but always carries the underlying code, so a failure
+// can be diagnosed from a screenshot instead of requiring DevTools. A silent
+// generic message previously hid a 42501 permission error for days.
+function failureMessage(code?: string): string {
+  return `Something went wrong. Please try again. (${code ?? "unknown"})`;
+}
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -27,44 +37,54 @@ export default function RegisterPage() {
   async function onSubmit(data: RegisterFormValues) {
     setServerError(null);
 
-    const { data: event, error: eventErr } = await supabase
-      .from("events")
-      .select("id")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
+    try {
+      const { data: event, error: eventErr } = await anonSupabase
+        .from("events")
+        .select("id")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
 
-    if (eventErr || !event) {
-      console.error("[register] event fetch failed", eventErr);
-      setServerError("Something went wrong. Please try again.");
-      return;
-    }
-
-    const token = nanoid();
-
-    const { error: insertErr } = await supabase
-      .from("registrations")
-      .insert({
-        event_id: event.id,
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        company: data.company || null,
-        token,
-        status: "pending",
-      });
-
-    if (insertErr) {
-      console.error("[register] insert failed", insertErr);
-      if (insertErr.code === "23505") {
-        setServerError("This email has already registered.");
-      } else {
-        setServerError("Something went wrong. Please try again.");
+      if (eventErr || !event) {
+        console.error("[register] event fetch failed", eventErr);
+        setServerError(failureMessage(eventErr?.code));
+        return;
       }
-      return;
-    }
 
-    router.push(`/status/${token}`);
+      const token = nanoid();
+
+      // No .select() chained here on purpose: `anon` holds INSERT but not
+      // SELECT on registrations, so asking for the inserted row back would
+      // fail the whole submit.
+      const { error: insertErr } = await anonSupabase
+        .from("registrations")
+        .insert({
+          event_id: event.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          company: data.company || null,
+          token,
+          status: "pending",
+        });
+
+      if (insertErr) {
+        console.error("[register] insert failed", insertErr);
+        if (insertErr.code === DUPLICATE_EMAIL_CODE) {
+          setServerError("This email has already registered.");
+        } else {
+          setServerError(failureMessage(insertErr.code));
+        }
+        return;
+      }
+
+      router.push(`/status/${token}`);
+    } catch (error: unknown) {
+      // Without this the throw escapes handleSubmit as an unhandled rejection:
+      // no banner, no redirect, the button just re-enables.
+      console.error("[register] submit threw", error);
+      setServerError(failureMessage("exception"));
+    }
   }
 
   return (
