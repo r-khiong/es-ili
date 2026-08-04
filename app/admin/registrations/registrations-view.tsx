@@ -8,9 +8,12 @@ import { RegistrationsTable } from "./registrations-table";
 
 type Registration = Database["public"]["Tables"]["registrations"]["Row"];
 
+// Labels only — the keys stay the DB values, so filterHref() keeps producing
+// ?status=pending and existing links do not break. See lib/status.ts for why
+// pending reads as "Submitted".
 const FILTER_LABELS: Record<StatusFilter, string> = {
   all: "All",
-  pending: "Pending",
+  pending: "Submitted",
   approved: "Approved",
   rejected: "Rejected",
 };
@@ -71,7 +74,7 @@ export function RegistrationsView({
             <p className="text-sm text-muted-foreground">
               {filter === "all"
                 ? "Registrations will appear here once people sign up."
-                : `No ${filter} registrations.`}
+                : `No ${FILTER_LABELS[filter].toLowerCase()} registrations.`}
             </p>
           </div>
         ) : (

@@ -1,16 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { CalendarCheck } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldError } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { nanoid } from "nanoid";
 import { anonSupabase } from "@/lib/supabase/anon-client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { EventCard } from "@/components/event/event-card";
 import {
   registerFormSchema,
   type RegisterFormValues,
@@ -26,6 +23,28 @@ function failureMessage(code?: string): string {
   return `Something went wrong. Please try again. (${code ?? "unknown"})`;
 }
 
+// Variant A row: label in a fixed 104px column, input to its right, dashed
+// hairline between rows. Collapses to a single column below 900px, matching the
+// mockup's own breakpoint rather than a Tailwind default.
+const ROW =
+  "grid grid-cols-1 gap-2 border-b border-dashed border-[var(--dash-d)] py-[15px] min-[900px]:grid-cols-[104px_minmax(0,1fr)] min-[900px]:items-center min-[900px]:gap-[18px]";
+
+const INPUT_BASE =
+  "min-h-[44px] w-full rounded-lg border bg-white/[0.03] px-[13px] py-[11px] text-[14px] text-[#DEDFE0] placeholder:text-[#5E5E5E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-green)] focus-visible:ring-offset-2 focus-visible:ring-offset-black";
+
+function FieldError_({ error }: { error?: FieldError }) {
+  if (!error) return null;
+  return (
+    <p className="mt-[7px] flex items-center gap-[7px] text-[12px] text-[#F09090]">
+      <span
+        aria-hidden="true"
+        className="h-[9px] w-[9px] shrink-0 rounded-full bg-[#E06060]"
+      />
+      {error.message}
+    </p>
+  );
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -33,6 +52,8 @@ export default function RegisterPage() {
     resolver: zodResolver(registerFormSchema),
     mode: "onTouched",
   });
+
+  const errors = form.formState.errors;
 
   async function onSubmit(data: RegisterFormValues) {
     setServerError(null);
@@ -88,140 +109,160 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="grid min-h-svh lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col justify-between bg-zinc-900 p-10 text-zinc-50">
-        <div className="flex items-center gap-2 font-semibold">
-          <CalendarCheck className="h-5 w-5" />
-          <span className="text-lg">RSVP</span>
-        </div>
-        <blockquote className="space-y-2">
-          <p className="text-lg leading-relaxed">
-            &ldquo;Manage event RSVPs without the spreadsheet chaos.&rdquo;
-          </p>
-          <footer className="text-sm text-zinc-400">— r.khiong</footer>
-        </blockquote>
-      </div>
+    <div className="flex min-h-svh flex-1 flex-col bg-black text-[#DEDFE0]">
+      <nav className="flex items-center justify-between border-b border-white/10 px-[34px] py-[18px]">
+        <Image
+          src="/brand/mark-primary-dark.svg"
+          alt="RSVP"
+          width={30}
+          height={32}
+          priority
+          className="h-[26px] w-auto"
+        />
+        <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-[#9E9E9E]">
+          Registration
+        </span>
+      </nav>
 
-      <div className="flex flex-col">
-        <div className="flex justify-end p-6">
-          <Link href="/admin/login" className="text-sm font-medium hover:underline">
-            Admin
-          </Link>
-        </div>
+      <main className="mx-auto w-full max-w-[560px] px-6 py-14 text-center">
+        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#9E9E9E]">
+          Step 1 of 1
+        </p>
+        <h1 className="font-heading mt-3.5 text-[clamp(26px,3.4vw,34px)] font-bold leading-[1.08] tracking-[-0.015em]">
+          Register for the event
+        </h1>
 
-        <div className="flex flex-1 justify-center px-6 pt-4 pb-10 lg:items-center lg:px-12 lg:pt-0">
-          <div className="w-full max-w-md mx-auto space-y-6">
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold">Register for the event</h1>
-              <p className="text-sm text-muted-foreground">
-                Enter your details below to register
-              </p>
+        <EventCard className="mt-[30px] mb-[34px]" />
+
+        {serverError && (
+          <div
+            role="alert"
+            className="mb-6 flex items-center gap-[10px] rounded-lg border border-[#E06060] bg-[#E06060]/10 px-4 py-3 text-left text-[13px] text-[#F09090]"
+          >
+            <span
+              aria-hidden="true"
+              className="h-[9px] w-[9px] shrink-0 rounded-full bg-[#E06060]"
+            />
+            {serverError}
+          </div>
+        )}
+
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="text-left"
+          noValidate
+        >
+          <div className="border-t border-dashed border-[var(--dash-d)]">
+            <div className={ROW}>
+              <label
+                htmlFor="name"
+                className="font-mono text-[11.5px] tracking-[0.06em] text-[#DEDFE0]"
+              >
+                Name
+              </label>
+              <div>
+                <input
+                  id="name"
+                  type="text"
+                  autoComplete="name"
+                  aria-invalid={!!errors.name}
+                  className={`${INPUT_BASE} ${errors.name ? "border-[#E06060]" : "border-white/[0.16]"}`}
+                  {...form.register("name")}
+                />
+                <FieldError_ error={errors.name} />
+              </div>
             </div>
 
-            {serverError && (
-              <div
-                role="alert"
-                className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            <div className={ROW}>
+              <label
+                htmlFor="email"
+                className="font-mono text-[11.5px] tracking-[0.06em] text-[#DEDFE0]"
               >
-                {serverError}
+                Email
+              </label>
+              <div>
+                <input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  aria-invalid={!!errors.email}
+                  className={`${INPUT_BASE} ${errors.email ? "border-[#E06060]" : "border-white/[0.16]"}`}
+                  {...form.register("email")}
+                />
+                <FieldError_ error={errors.email} />
               </div>
-            )}
+            </div>
 
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6"
-              noValidate
-            >
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <div>
-                    <Input
-                      id="name"
-                      type="text"
-                      aria-invalid={!!form.formState.errors.name}
-                      {...form.register("name")}
-                    />
-                    {form.formState.errors.name && (
-                      <p className="text-sm text-destructive mt-1">
-                        {form.formState.errors.name.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <div>
-                    <Input
-                      id="email"
-                      type="email"
-                      aria-invalid={!!form.formState.errors.email}
-                      {...form.register("email")}
-                    />
-                    {form.formState.errors.email && (
-                      <p className="text-sm text-destructive mt-1">
-                        {form.formState.errors.email.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <div>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      aria-invalid={!!form.formState.errors.phone}
-                      {...form.register("phone")}
-                    />
-                    {form.formState.errors.phone && (
-                      <p className="text-sm text-destructive mt-1">
-                        {form.formState.errors.phone.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="company">
-                    Company
-                    <span className="font-normal text-muted-foreground">
-                      (optional)
-                    </span>
-                  </Label>
-                  <div>
-                    <Input
-                      id="company"
-                      type="text"
-                      aria-invalid={!!form.formState.errors.company}
-                      {...form.register("company")}
-                    />
-                    {form.formState.errors.company && (
-                      <p className="text-sm text-destructive mt-1">
-                        {form.formState.errors.company.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={form.formState.isSubmitting}
-                className="w-full h-12 text-base font-semibold"
+            <div className={ROW}>
+              <label
+                htmlFor="phone"
+                className="font-mono text-[11.5px] tracking-[0.06em] text-[#DEDFE0]"
               >
-                {form.formState.isSubmitting
-                  ? "Submitting..."
-                  : "Submit registration"}
-              </Button>
-            </form>
+                Phone
+              </label>
+              <div>
+                <input
+                  id="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  aria-invalid={!!errors.phone}
+                  className={`${INPUT_BASE} ${errors.phone ? "border-[#E06060]" : "border-white/[0.16]"}`}
+                  {...form.register("phone")}
+                />
+                <FieldError_ error={errors.phone} />
+              </div>
+            </div>
 
-            <p className="text-center text-xs text-muted-foreground">
-              By submitting, you agree this is a demo event. No real data is
-              stored long-term.
-            </p>
+            <div className={ROW}>
+              <label
+                htmlFor="company"
+                className="font-mono text-[11.5px] tracking-[0.06em] text-[#DEDFE0]"
+              >
+                Company
+                <span className="block text-[9.5px] uppercase tracking-[0.1em] text-[#5E5E5E]">
+                  Optional
+                </span>
+              </label>
+              <div>
+                <input
+                  id="company"
+                  type="text"
+                  autoComplete="organization"
+                  aria-invalid={!!errors.company}
+                  className={`${INPUT_BASE} ${errors.company ? "border-[#E06060]" : "border-white/[0.16]"}`}
+                  {...form.register("company")}
+                />
+                <FieldError_ error={errors.company} />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </main>
+
+          <p className="mt-7 text-[11.5px] leading-[1.7] text-[#9E9E9E]">
+            By submitting this form you agree this is a portfolio demo site. The
+            details you enter are used only to review this demo registration,
+            are never shared with third parties or used for marketing, and are
+            cleared periodically.
+          </p>
+
+          <div className="mt-[26px]">
+            <button
+              type="submit"
+              disabled={form.formState.isSubmitting}
+              className="font-mono rounded-lg bg-[var(--brand-green)] px-[34px] py-3.5 text-[14px] font-medium tracking-[0.04em] text-black transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {form.formState.isSubmitting
+                ? "Submitting..."
+                : "Submit registration"}
+            </button>
+          </div>
+        </form>
+      </main>
+
+      <footer className="border-t border-white/10 px-[34px] py-5 text-center">
+        <span className="font-mono text-[10.5px] tracking-[0.06em] text-[#5E5E5E]">
+          Copyright © 2026 és&apos;ilî. All rights reserved.
+        </span>
+      </footer>
+    </div>
   );
 }

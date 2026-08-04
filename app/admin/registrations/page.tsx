@@ -58,7 +58,7 @@ export default async function RegistrationsPage({
         >
           <Eye className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span>
-            Demo mode (read-only) — batch actions disabled. Seeded demo data.
+            Demo mode (read-only) · batch actions disabled. Seeded demo data.
           </span>
         </div>
       )}
