@@ -44,7 +44,7 @@ This repo also serves as a PM portfolio artifact. Its primary reviewer persona (
 | G2 | Organizers can review and approve/reject in batch | Organizer can process 50+ registrations in under 5 minutes | ✅ Shipped |
 | G3 | Approved attendees receive a unique QR code | QR renders on the status page immediately after approval | ✅ Shipped |
 | G4 | Organizers can verify and check in attendees on-site | Organizer can mark an approved attendee as checked-in from the admin view | ↪ Moved to Phase 2 (2026-07-07); QR verification-ready state shipped via RSVP-5 |
-| G5 *(v0.4)* | Reviewers can grasp the product and its decision trail from one URL | A non-technical reader states the product's purpose + two key decisions within 3 minutes; admin workflow visible without requesting credentials | 🔄 In progress — RSVP-8 ✅ Done; root landing on the non-story track (§9) |
+| G5 *(v0.4)* | Reviewers can grasp the product and its decision trail from one URL | A non-technical reader states the product's purpose + two key decisions within 3 minutes; admin workflow visible without requesting credentials | ✅ Shipped — RSVP-8 ✅ Done; root landing on the non-story track (§9) ✅ shipped 2026-08-04 (PR #1) |
 | G6 *(v0.5)* | Attendees learn the review outcome without polling the status page | An approved / rejected attendee receives an email carrying the decision and their status-page link | 🔜 RSVP-7 |
 
 ### Non-Goals (Phase 1)
@@ -286,7 +286,7 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | M1 — Build (paused mid-flight) | RSVP-3, RSVP-4 started | Sprint v2 (5/13–5/22), closed honestly at 0/4 shipped ✅ |
 | M2 — Recovery | RSVP-3 ✅ (6/3, RLS hardened) · RSVP-4 ✅ (6/11+) · RSVP-5 ✅ (accepted 7/7) · RSVP-6 ↪ Phase 2 (7/7) | Sprint v3 (6/2–6/16) + spillover, closed 7/7 |
 | M3 — Ship | Netlify production deploy, repo public, README | ✅ Live (`r-khiong-rsvp.netlify.app`) |
-| M4 — Visibility *(v0.4; scope restated in v0.5)* | RSVP-8 read-only demo ✅ + root landing (non-story track, in progress) + docs-in-repo ✅ + README sync ✅ | July 2026, then **freeze** (changes only on interview feedback) |
+| M4 — Visibility *(v0.4; scope restated in v0.5)* | RSVP-8 read-only demo ✅ + root landing (non-story track) ✅ shipped 2026-08-04 (PR #1) + docs-in-repo ✅ + README sync ✅ | July 2026, then **freeze** (changes only on interview feedback) |
 | M5 — Notifications *(v0.5)* | RSVP-7 email notifications | Not scheduled — sits outside the M4 freeze; scheduled only if interview feedback calls for it |
 
 > Sprint v2 was paused by a pre-scheduled trip (5/23–5/31). Rather than retroactively
