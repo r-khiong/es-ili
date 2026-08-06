@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { NavLogo } from "@/components/brand/nav-logo";
 import { DemoEntryButton } from "@/components/story/demo-entry-button";
 
 // RSVP root landing, Paper Light editorial (RJ mockup v9, 2026-07-31).
@@ -89,20 +90,6 @@ const FLOW: readonly FlowRow[] = [
   },
 ];
 
-function Monogram() {
-  return (
-    <Image
-      src="/brand/mark-primary-light.svg"
-      alt="RSVP"
-      width={30}
-      height={32}
-      priority
-      unoptimized
-      className="h-[26px] w-auto"
-    />
-  );
-}
-
 function Shot({
   src,
   alt,
@@ -161,7 +148,7 @@ export default function Home() {
       <header
         className={`${PAD} flex items-center justify-between border-b border-[#ECECEC] py-5`}
       >
-        <Monogram />
+        <NavLogo />
         <nav
           aria-label="Main navigation"
           className={`${MONO} flex items-center gap-[22px] text-xs tracking-[0.04em]`}
