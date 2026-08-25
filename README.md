@@ -1,4 +1,4 @@
-# RSVP Demo
+# és'ilî
 
 A lightweight event registration management system — replacing the "manage RSVPs in a spreadsheet + email" workflow with a real product flow: attendees register and track their status by token; organizers review and manage the list in batches.
 

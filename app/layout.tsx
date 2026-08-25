@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   // Without metadataBase, Next resolves app/opengraph-image.png against
   // http://localhost:3000 and every shared link ships a dead preview image.
   metadataBase: new URL(SITE_URL),
-  title: "RSVP",
+  title: "és'ilî",
   description: "Event RSVP & check-in system",
 };
 

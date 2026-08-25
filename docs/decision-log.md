@@ -25,6 +25,7 @@
 | S3/S4 整併為「流程 × 決策」分鏡（2026-07-11） | 產品截圖為底圖＋拉線標註，流程步驟與對應決策配對呈現，共 4 組、3 次滑動切換 | 解決示意圖過多、流程與決策兩區內容重複的問題；讓「怎麼運作」與「為什麼這樣做」在同一視覺敘事裡互相印證 |
 | Story 頁動效例外（2026-07-11） | §8.6「動效只用 shadcn default」新增 story 頁例外：僅允許 CSS fade/slide-in（IntersectionObserver 觸發） | 分鏡切換需要進場節奏；上限鎖在輕量宣告式動效，拒絕 sticky 捲動時序引擎——工程量與行動版風險不成比例 |
 | Logo 統一為 RSVP（2026-07-11） | story 頁與產品 UI 的 logo 文字均用「RSVP」，移除「Demo」字樣 | demo 屬性由入口按鈕文案與 footer 免責聲明承擔；產品名乾淨。放棄「名稱即免責」的保守作法 |
+| 站名改為 és'ilî（2026-08-25） | 網站 `<title>` 由「RSVP」、README 標題由「RSVP Demo」改為「és'ilî」；推翻 2026-08-04「és'ilî 僅為概念標、產品對外名稱為 RSVP」的決定 | PjM 決策，理由待 PjM 補記。本次只改站名與 README 標題；admin 頁 header 文字、/register 與 /status 的 logo alt、OG 分享圖仍為「RSVP」，待 PjM 一併定案後再改 |
 
 ## 流程與治理
 
