@@ -109,7 +109,7 @@ export default async function StatusPage({
       <nav className="flex items-center justify-between border-b border-white/10 px-[34px] py-[18px]">
         <Image
           src="/brand/mark-primary-dark.svg"
-          alt="RSVP"
+          alt="és'ilî"
           width={30}
           height={32}
           priority

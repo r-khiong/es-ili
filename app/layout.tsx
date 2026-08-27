@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   // http://localhost:3000 and every shared link ships a dead preview image.
   metadataBase: new URL(SITE_URL),
   title: "és'ilî",
-  description: "Event RSVP & check-in system",
+  description: "Event registration and guest management",
 };
 
 export default function RootLayout({

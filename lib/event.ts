@@ -35,7 +35,7 @@ export const EVENT: EventInfo = {
     "https://www.google.com/maps/search/?api=1&query=Aspace+YS+No.+1+Yumen+St+Zhongshan+Dist+Taipei",
   description:
     "An evening of talks and open networking for digital marketing practitioners.",
-  organizerName: "RSVP",
+  organizerName: "és'ilî",
 };
 
 // Formatting is composed from separate Intl formatters rather than

@@ -93,7 +93,7 @@ function Monogram() {
   return (
     <Image
       src="/brand/mark-primary-light.svg"
-      alt="RSVP"
+      alt="és'ilî"
       width={30}
       height={32}
       priority
