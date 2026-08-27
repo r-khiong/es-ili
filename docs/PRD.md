@@ -1,15 +1,15 @@
 # RSVP — Product Requirements Document (Phase 1 MVP)
 
 > **Author:** Renata Jiang (r.khiong)
-> **Created:** 2026-04-16 · **Last updated:** 2026-07-28
+> **Created:** 2026-04-16 · **Last updated:** 2026-08-27
 > **Status:** Active
-> **Version:** 0.5 (supersedes v0.4 / v0.3 / v0.2 / v0.1)
+> **Version:** 0.6 (supersedes v0.5 / v0.4 / v0.3 / v0.2 / v0.1)
 
-> **What changed in v0.5 (see full changelog §9):** **RSVP-7 realigned to Jira** — the key now
-> carries **Email Notifications** (Phase 1), and the former *RSVP-7 Story Landing* story is
-> **removed as superseded**: the landing is a non-story track (descriptive branch), not a user
-> story (decision 2026-07-22). **RSVP-8 marked Done.** Email moved out of Non-Goals and out of
-> the Phase 2 backlog accordingly (SMS stays deferred).
+> **What changed in v0.6 (see full changelog §9):** Editorial, no scope change. The document is
+> now entirely in English. The §1 *Portfolio Layer* is restated as the **Visibility Layer** and the
+> §3 *Reviewer* persona as the **First-time visitor** — the underlying product problem is unchanged
+> (90% of the product sits behind a login, so a first-time visitor cannot evaluate it). **OQ-9 is
+> re-resolved**: the landing is English throughout, superseding the 2026-07-10 language split.
 
 ---
 
@@ -28,9 +28,9 @@ Event organizers managing 50+ attendees still default to Google Forms plus manua
 
 RSVP is a lightweight event registration and guest-management tool. Organizers collect applications, review and approve/reject attendees in batch, and verify attendees on-site — replacing the fragmented Google Form + email + spreadsheet workflow with a single streamlined system.
 
-### Portfolio Layer (added in v0.4)
+### Visibility Layer (added in v0.4)
 
-This repo also serves as a PM portfolio artifact. Its primary reviewer persona (hiring managers / interviewers) could not previously see the product's core value — the admin workflow and the decision trail — from the public URL. A **visibility layer** was added for that persona without changing the product itself: **RSVP-8** (read-only admin demo) plus the **root landing** — the latter tracked as a non-story descriptive branch rather than a user story (decision 2026-07-22; see §9).
+Around 90% of this product sits behind an admin login, so a first-time visitor arriving at the public URL saw a registration form and nothing else — neither the review workflow the product exists for, nor the reasoning behind how it works. A **visibility layer** was added to close that gap without changing the product itself: **RSVP-8** (read-only admin demo) plus the **root landing** — the latter tracked as a non-story descriptive branch rather than a user story (decision 2026-07-22; see §9).
 
 ---
 
@@ -59,7 +59,7 @@ This repo also serves as a PM portfolio artifact. Its primary reviewer persona (
 | Automated filtering rules | MVP uses manual review; rule-based filtering needs a TA-definition UI; Phase 2 |
 | Free-text search in dashboard | Status filter is sufficient for MVP; keyword search deferred to Phase 2 |
 | Pagination in dashboard | *(realigned in v0.4)* Not built in MVP — dataset is small; select-all scopes to the rendered page. Pagination (50/page) moves to Phase 2 with search |
-| Interactive demo sandbox *(v0.4)* | Read-only demo + workflow GIF delivers ~80% of reviewer value at ~1/3 cost with zero data-pollution risk; sandbox with data reset is Phase 2, gated on interview feedback |
+| Interactive demo sandbox *(v0.4)* | The read-only demo delivers ~80% of the experience at ~1/3 the cost with zero data-pollution risk — concurrent visitors cannot corrupt each other's seeded data. A sandbox with data reset stays in the Phase 2 backlog |
 | Calendar integration | Nice-to-have, not critical to the registration-to-check-in flow |
 | Multi-event UI | Schema is multi-event ready; a single event is seeded; multi-event UI deferred |
 | Attendee account system | Attendees access status via a unique token URL — no login |
@@ -85,13 +85,13 @@ This repo also serves as a PM portfolio artifact. Its primary reviewer persona (
 | Current Solution | Fill Google Form → wait for email → may miss it / not know the timeline |
 | Pain Points | No visibility into status; no standardized entry confirmation |
 
-### Reviewer *(added in v0.4)*
+### First-time visitor *(added in v0.4)*
 | Attribute | Description |
 |-----------|-------------|
-| Who | Hiring manager / interviewer reviewing this repo as a portfolio piece |
-| Goal | Judge the author's PM judgment (scope, trade-offs, delivery) in minutes |
-| Current Solution | Opens the live URL → sees only a registration form; admin flow and decision docs invisible |
-| Pain Points | No credentials for the admin side; decisions buried in commit history and external docs |
+| Who | Someone evaluating the product from the public URL, with no account and no prior context |
+| Goal | Understand what the product does, how the flow works, and why it is built this way — in minutes |
+| Current Solution | Opens the live URL → sees only a registration form; the review workflow and the reasoning are invisible |
+| Pain Points | No credentials for the admin side; the reasoning lives in commit history and external documents |
 
 ---
 
@@ -170,7 +170,7 @@ This repo also serves as a PM portfolio artifact. Its primary reviewer persona (
 
 > **As an** Organizer, **I want to** mark approved attendees as checked-in on-site, **so that** I can verify attendance quickly.
 
-**Status:** ↪ **Moved to Phase 2** (PjM decision 2026-07-07). Rationale: the demo's goal is one core flow shipped end-to-end at 100%; check-in is not required for the reviewer-facing E2E story (register → review → status/QR). The QR already encodes the token status URL, so the future check-in flow (manual or scanner) plugs in without backend changes. AC preserved in §8 backlog for Phase 2 pickup.
+**Status:** ↪ **Moved to Phase 2** (PM decision 2026-07-07). Rationale: the demo's goal is one core flow shipped end-to-end at 100%; check-in is not required for the reviewer-facing E2E story (register → review → status/QR). The QR already encodes the token status URL, so the future check-in flow (manual or scanner) plugs in without backend changes. AC preserved in §8 backlog for Phase 2 pickup.
 
 ---
 
@@ -192,17 +192,19 @@ This repo also serves as a PM portfolio artifact. Its primary reviewer persona (
 - Single-event scope (see trade-off (a))
 - **Event information source: `TBD — pending PM decision`** — pending the resolution of how `events` and `lib/event.ts` divide responsibility
 
-**Trade-offs (locked by PjM)**
+**Trade-offs (locked by PM)**
 ```
-(a) 單一活動 scope —— schema 本身支援 multi-event
-    （events 表 + registrations.event_id FK），
-    但 UI 與本版功能刻意只涵蓋單一活動。
-    Multi-event 管理介面屬 Phase 2。
+(a) Single-event scope. The schema itself supports multiple events
+    (the events table plus the registrations.event_id FK), but the UI
+    and this release deliberately cover one event only.
+    A multi-event management interface is Phase 2.
 
-(b) 無單筆補寄 —— 失敗只 log，補寄能力列 Phase 1.5
+(b) No per-record resend. A failed send is logged only; the resend
+    capability is Phase 1.5.
 
-(c) 不擴 status enum —— 以 nullable timestamp 表達寄送狀態，
-    換取最小 migration 與最小 RSVP-4 dashboard 改動
+(c) No status enum extension. Send state is expressed as a nullable
+    timestamp, trading richer state for the smallest possible migration
+    and the smallest possible change to the RSVP-4 dashboard.
 ```
 
 **Out of scope (this story):** per-record resend → Phase 1.5 (trade-off b) · SMS → Phase 2 · send-status column surfaced in the dashboard UI → Phase 2 · multi-event templating → Phase 2 (trade-off a) · registration-received (pre-decision) confirmation email
@@ -302,14 +304,14 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | OQ-1 | Custom (organizer-defined) form fields? | Deferred to Phase 3 |
 | OQ-2 | Organizer authentication method? | ✅ Resolved — Supabase Auth (single admin MVP) |
 | OQ-3 | Dedicated QR scan page vs visual check? | Scanner → Phase 2 (with RSVP-6) |
-| OQ-4 | Multi-language (EN / ZH)? | Product UI English-only; story landing Chinese (OQ-9); i18n → Phase 3 |
+| OQ-4 | Multi-language (EN / ZH)? | English-only throughout (OQ-9); i18n → Phase 3 |
 | OQ-5 | Single vs multi-event? | ✅ Resolved — multi-event schema, single event seeded, multi-event UI deferred |
 | OQ-6 | Keyword search in dashboard? | Deferred to Phase 2 (status filter only for MVP) |
 | OQ-7 | CSV export? | Phase 2 |
 | OQ-8 | Inline Remark editing in dashboard? | Phase 2 (MVP shows Remark read-only) |
-| OQ-9 *(v0.4)* | Story landing language? | ✅ Resolved 2026-07-10 — Chinese body (reviewer audience is Taiwan hiring managers), English UI terms; product UI stays English |
-| OQ-10 *(v0.4)* | Where do product docs live? | ✅ Resolved 2026-07-10 — in-repo `docs/` (git history = version trail); Notion keeps private job-search materials only |
-| OQ-11 *(v0.4)* | Read-only demo vs interactive sandbox? | ✅ Resolved 2026-07-10 — read-only + GIF for Phase 1; sandbox with reset gated on interview feedback |
+| OQ-9 *(v0.4)* | Landing page language? | ✅ Resolved 2026-08-27 — English throughout. Supersedes the 2026-07-10 resolution (Chinese body, English UI terms); see `docs/decision-log.md` Amendments |
+| OQ-10 *(v0.4)* | Where do product docs live? | ✅ Resolved 2026-07-10 — in-repo `docs/` (git history = version trail); Notion keeps private material only |
+| OQ-11 *(v0.4)* | Read-only demo vs interactive sandbox? | ✅ Resolved 2026-07-10 — read-only for Phase 1; sandbox with reset stays in the Phase 2 backlog. The batch-action GIF that accompanied this decision was cancelled 2026-08-03 and never shipped (see `docs/decision-log.md` Amendments) |
 
 ---
 
@@ -345,7 +347,8 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | v0.2 | 2026-05-07 | Supabase Auth added to MVP; scan page brought into MVP; Jira board + AC built |
 | v0.3 | 2026-06-06 | Dashboard columns realigned to built schema; Business Card upload removed; organizer auth resolved to Supabase Auth; on-site check-in confirmed manual (scanner → Phase 1.5); status filter kept, free-text search → Phase 2; multi-event clarified (schema-ready, single-event UI); idempotent / reversible batch rule and `select-all = current page` documented |
 | **v0.4** | **2026-07-10** | RSVP-4/5 marked **Done**, AC realigned to as-built: **batch-only pivot (2026-06-09)** documented — per-row buttons removed; `registrations.name` (not `full_name`); **no pagination in MVP** (moved to Phase 2). RSVP-6 **moved to Phase 2** (2026-07-07). Added **Reviewer persona**, **G5**, **RSVP-7 Story Landing**, **RSVP-8 Read-only Admin Demo**. Security model: per-role grant lesson (7/7) + demo-user restrictive carve-out. Docs moved into repo (`docs/`); OQ-9/10/11 resolved. M4 Visibility milestone + post-M4 freeze |
-| **v0.5** | **2026-07-28** | **RSVP-7 realigned to Jira as Email Notifications.** The v0.4 *RSVP-7 Story Landing* story is **removed as superseded** — the root landing is a **non-story track (descriptive branch)**, not a user story (decision **2026-07-22**); Jira is canonical for keys and this PRD follows Jira. Trade-offs (a) single-event scope / (b) no per-record resend, failures log-only → Phase 1.5 / (c) no `status` enum extension, send state as a nullable timestamp — locked by PjM. **RSVP-8 → Done** (merged 2026-07-14). Email removed from §2 Non-Goals and from the §8 backlog (**SMS stays deferred**); new **Phase 1.5** bucket for resend. Added **G6**, **M5 — Notifications**, and provisional `registrations.notified_at` to the §5 data model. *Supersedes draft revisions discussed 2026-07-22/23 (chat-side); remaining content port tracked separately.* Open: RSVP-7 AC awaits reconciliation against the Jira ticket; event information source `TBD — pending PM decision` |
+| **v0.6** | **2026-08-27** | **Editorial revision; no scope change.** Document converted to English throughout. §1 *Portfolio Layer* restated as the **Visibility Layer** and the §3 *Reviewer* persona as the **First-time visitor** — same product problem, stated from the product's side rather than from an evaluator's. **OQ-9 re-resolved**: English throughout, superseding the 2026-07-10 language split (see `docs/decision-log.md` Amendments). OQ-11 corrected — the batch-action GIF was cancelled 2026-08-03 and never shipped. Abbreviation `PjM` normalised to `PM`. *Not covered here:* the §2 G5 and §6 M4 status corrections are carried by PR #2; the document title still reads RSVP, pending the combined naming decision noted in `docs/decision-log.md`. |
+| **v0.5** | **2026-07-28** | **RSVP-7 realigned to Jira as Email Notifications.** The v0.4 *RSVP-7 Story Landing* story is **removed as superseded** — the root landing is a **non-story track (descriptive branch)**, not a user story (decision **2026-07-22**); Jira is canonical for keys and this PRD follows Jira. Trade-offs (a) single-event scope / (b) no per-record resend, failures log-only → Phase 1.5 / (c) no `status` enum extension, send state as a nullable timestamp — locked by PM. **RSVP-8 → Done** (merged 2026-07-14). Email removed from §2 Non-Goals and from the §8 backlog (**SMS stays deferred**); new **Phase 1.5** bucket for resend. Added **G6**, **M5 — Notifications**, and provisional `registrations.notified_at` to the §5 data model. *Supersedes draft revisions discussed 2026-07-22/23 (chat-side); remaining content port tracked separately.* Open: RSVP-7 AC awaits reconciliation against the Jira ticket; event information source `TBD — pending PM decision` |
 
 ---
 
