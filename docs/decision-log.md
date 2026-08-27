@@ -1,66 +1,67 @@
-# RSVP Decision Log
+# Decision Log
 
-> 每一則產品層與技術層決策的完整紀錄，含取捨。PRD（`docs/PRD.md`）記「規格是什麼」，本檔記「為什麼是這樣」。
-> 活文件：git commit 即版本紀錄。格式：`| 決策 | What | Why 與 Trade-off |`
+> Every product and technical decision, with its trade-off. `docs/PRD.md` records **what the spec
+> is**; this file records **why it is that way**.
 >
-> 維護者：Renata Jiang · 建檔：2026-07-10（回溯收錄 2026-04 起全部決策）
+> Living document — git history is its version trail. Format: `| Decision | What | Why and trade-off |`
+>
+> Maintainer: Renata Jiang · Started 2026-07-10, backfilled with every decision from 2026-04 onward.
 
 ---
 
-## 產品與範疇
+## Product and Scope
 
-| 決策 | What | Why 與 Trade-off |
+| Decision | What | Why and trade-off |
 |---|---|---|
-| MVP 砍半：8 → 4 user stories（2026-04~05） | 原始規劃含通知、行事曆、自動篩選、audit 等 8 條 story，MVP 收斂為 register / review / status / check-in 四條 | MVP 要的是一條完整走通的 loop，不是功能數。犧牲豐富度，換取可如期交付的最小完整閉環；其餘明確標 deferred 而非 dropped |
-| Business card 上傳移出 MVP（v0.3, 2026-06-06） | v0.1 表單含名片檔案上傳，v0.3 整項移除 | 避免 storage + RLS 附加複雜度；報名核心流程不依賴它。Phase 2 有真實需求再回來 |
-| **Batch-only 審核模型（2026-06-09 pivot）** | v0.3 PRD（06-06）原規格是「單列 Approve/Reject 按鈕 + 批次操作」並存；實作前鎖定為 batch-only——無單列按鈕，勾選 1 筆即單筆操作（同一路徑） | 活動營運實況是「收一批、審一批」，逐列按鈕是想像出來的需求；單一寫入路徑讓 idempotent 邏輯只寫一次、狀態機更簡單。放棄單列快捷操作。**這是一次記錄在案的需求變更：PRD 定稿三天後推翻自己，理由與日期可回溯** |
-| Check-in 整項移 Phase 2（2026-07-07） | RSVP-6（manual check-in + 之後的 QR scanner）自 MVP 移出 | Demo 對評審的 E2E 故事（報名→審核→狀態/QR）不需要 check-in 也完整；QR 已編碼 token 狀態頁 URL，未來 check-in 直接重用、後端零改動。犧牲 G4，保 100% 完成度 |
-| Email 通知降級 backlog | 曾評估 Gmail SMTP 優於 Resend（免費額度與設定成本），隨後整項降入 Phase 2 | 通知在核心 loop 之外；先評估再降級，避免「做一半的整合」掛在 MVP 上 |
-| Multi-event schema、single-event UI | `events` / `registrations` 自 day 1 分表，UI 只做單一活動 | 前期多 ~30 分鐘 schema 工，避免 Phase 2 加多活動時的痛苦 migration。放棄「更簡單的單表」 |
-| Root 改為敘事著陸頁（RSVP-7, 2026-07-10） | root `/` 由 redirect `/register` 改為 story landing（原 Block 7 計畫升級：產品 landing → 敘事 landing） | 履歷 URL 一步呈現 judgment（評審 3 分鐘旅程）；放棄「root = 產品入口」慣例——本專案的「產品」對主要受眾（評審）而言是決策敘事本身 |
-| Demo 後台唯讀 + GIF，互動 sandbox 降 Phase 2（RSVP-8, 2026-07-10） | 真 admin UI + 專用 demo 帳號 + RLS 層 deny-write；批次動作用 20 秒 GIF 呈現 | 8 成評審體驗、1/3 成本、零資料污染風險（多位評審同時操作不會互相改壞 seed）；與 check-in 降級同一條 scope 紀律。放棄「親手點批次核准」的完整體驗，面試回饋若證明需要再升級 |
-| 公開產品文件進 repo `docs/`（2026-07-10） | PRD、decision log 遷入 repo；Notion 只留私人求職材料 | 「PRD 是活文件、git commit 即版本」只有文件住在 repo 才成立；評審同站看 code + docs。放棄 Notion 的編輯體驗與美觀 |
-| 語言分層：story 中文、產品 UI 英文（2026-07-10） | 敘事層（root story page）中文 body + 英文術語；產品介面維持全英文 | 敘事受眾是台灣招聘方，judgment 傳達零折損；英文 UI 展示 modern B2B SaaS 慣例。放棄站內語言一致性，換受眾各取所需 |
-| Hero 單一 CTA 直達 /register（2026-07-11） | story 頁唯一 CTA `Enter RSVP` 直接進產品，不捲頁內 demo 區 | 產品自信優先、少一步操作；接受「訪客可能略過後段敘事」的風險，由 nav 錨點與 S3 區內雙入口補位。曾評估「捲至頁內 demo 區」方案，PjM 拍板直達 |
-| S3/S4 整併為「流程 × 決策」分鏡（2026-07-11） | 產品截圖為底圖＋拉線標註，流程步驟與對應決策配對呈現，共 4 組、3 次滑動切換 | 解決示意圖過多、流程與決策兩區內容重複的問題；讓「怎麼運作」與「為什麼這樣做」在同一視覺敘事裡互相印證 |
-| Story 頁動效例外（2026-07-11） | §8.6「動效只用 shadcn default」新增 story 頁例外：僅允許 CSS fade/slide-in（IntersectionObserver 觸發） | 分鏡切換需要進場節奏；上限鎖在輕量宣告式動效，拒絕 sticky 捲動時序引擎——工程量與行動版風險不成比例 |
-| Logo 統一為 RSVP（2026-07-11） | story 頁與產品 UI 的 logo 文字均用「RSVP」，移除「Demo」字樣 | demo 屬性由入口按鈕文案與 footer 免責聲明承擔；產品名乾淨。放棄「名稱即免責」的保守作法 |
-| 站名改為 és'ilî（2026-08-25） | 網站 `<title>` 由「RSVP」、README 標題由「RSVP Demo」改為「és'ilî」；推翻 2026-08-04「és'ilî 僅為概念標、產品對外名稱為 RSVP」的決定 | PjM 決策，理由待 PjM 補記。本次只改站名與 README 標題；admin 頁 header 文字、/register 與 /status 的 logo alt、OG 分享圖仍為「RSVP」，待 PjM 一併定案後再改 |
+| MVP halved: 8 → 4 user stories (2026-04~05) | The original plan carried 8 stories including notifications, calendar, automated filtering, and audit. The MVP converged on four: register / review / status / check-in | An MVP needs one loop that works end to end, not a feature count. Gave up breadth for a minimum complete loop that could actually ship on time; everything cut is marked *deferred*, not *dropped* |
+| Business card upload out of the MVP (v0.3, 2026-06-06) | v0.1 included a business card file upload on the form; v0.3 removed it entirely | Avoids the added storage and RLS complexity, and the core registration flow does not depend on it. It comes back in Phase 2 if a real need appears |
+| **Batch-only review model (2026-06-09 pivot)** | PRD v0.3 (06-06) specified per-row Approve/Reject buttons *and* batch actions. Before implementation the model was locked to batch-only — no per-row buttons; selecting a single row is the same code path as selecting many | Event operations work in batches: you receive a batch and you review a batch. Per-row buttons were an imagined requirement. A single write path means the idempotent logic is written once and the state machine stays simple. Gave up the per-row shortcut. **This is a recorded requirements change: the spec was overturned three days after it locked, and both the reasoning and the date are traceable** |
+| Check-in moved to Phase 2 (2026-07-07) | RSVP-6 (manual check-in, and the QR scanner that would follow) removed from the MVP | The end-to-end story — register → review → status with QR — is complete without it. The QR already encodes the status-page URL, so a future scanner reuses it with zero backend change. Gave up goal G4 to keep the core loop at 100% |
+| Email notifications deferred to the backlog | Gmail SMTP was assessed as preferable to Resend on free tier and setup cost, then the whole item was deferred to Phase 2 | Notifications sit outside the core loop. Assessing first and deferring second avoids leaving a half-finished integration attached to the MVP |
+| Multi-event schema, single-event UI | `events` and `registrations` were separate tables from day one; the UI covers one event only | Roughly 30 extra minutes of schema work up front to avoid a painful migration when Phase 2 adds multiple events. Gave up the simpler single-table design |
+| Root becomes a narrative landing page (2026-07-10) | Root `/` changed from a redirect to `/register` into a landing page covering the problem, the core flow, and the key decisions | A first-time visitor arriving at a bare registration form cannot tell what the product solves or why it is built this way — the reasoning was invisible and the admin workflow sat behind a login. Gave up the "root = product entry" convention |
+| Read-only demo admin instead of an interactive sandbox (2026-07-10) | The real admin UI with a dedicated demo account, writes denied by an RLS restrictive policy | Roughly 80% of the experience at about a third of the cost, with zero data-pollution risk — concurrent visitors cannot corrupt each other's seeded data. Same scope discipline as deferring check-in. Gave up hands-on batch approval; upgrade if usage shows it is needed |
+| Product documentation into the repo `docs/` (2026-07-10) | The PRD and this decision log moved into the repo; Notion keeps private material only | "The PRD is a living document and git history is its version trail" only holds if the document lives in the repo. Readers see code and docs in one place. Gave up Notion's editing experience and presentation |
+| Language layering: narrative in Chinese, product UI in English (2026-07-10) | The root landing carried Chinese body copy with English UI terms; the product interface stayed entirely English | The narrative audience was assumed to be local, so Chinese lost nothing in transmission, while an English UI demonstrates modern B2B SaaS convention. Gave up language consistency across the site. **Reversed 2026-08-27 — see Amendments** |
+| Single hero CTA straight to `/register` (2026-07-11) | The landing's primary CTA goes directly into the product rather than scrolling to an in-page demo section | Confidence in the product first, one fewer step. Accepts the risk that a visitor skips the later narrative, covered by the nav anchor and a second entry point further down. Scrolling to an in-page demo section was assessed and rejected |
+| Flow and decisions merged into one section (2026-07-11) | Product screenshots as the base layer, with each flow step paired against the decision behind it | Removes the duplication between a separate "how it works" section and a separate "why" section, and lets the two corroborate each other in a single visual sequence |
+| Motion exception for the landing (2026-07-11) | CLAUDE.md §8.6 restricts motion to shadcn defaults; the landing may additionally use CSS fade and slide-in triggered by IntersectionObserver | Sequenced sections need entry rhythm. The ceiling is deliberately set at lightweight declarative motion — a sticky scroll-timeline engine is disproportionate in engineering cost and mobile risk |
+| Logo unified to RSVP (2026-07-11) | The landing and the product UI both use "RSVP" as the logo text; the word "Demo" was removed | The demo nature is carried by the entry button copy and the footer disclaimer. Gave up the conservative "the name is the disclaimer" approach |
+| Site renamed to és'ilî (2026-08-25) | The site `<title>` and the README heading changed from "RSVP" to "és'ilî", overturning the 2026-08-04 position that és'ilî was a concept mark only and the public product name was RSVP | `TODO(PM): rationale.` Scope of this change was the site title and README heading only; the admin header, the `/register` and `/status` logo alt text, and the OG share image still read "RSVP" pending a single combined decision |
 
-## 流程與治理
+## Process and Governance
 
-| 決策 | What | Why 與 Trade-off |
+| Decision | What | Why and trade-off |
 |---|---|---|
-| **Sprint v2 誠實關閉（0/4 shipped）** | Sprint v2（5/13–5/22）被既定出國行程（5/23–5/31）打斷，選擇如實以 0/4 關閉、開新 Sprint v3 標記 Recovery，而非回頭延長 v2 日期 | 回溯改 sprint 日期是 ScrumBut 反模式，會污染 velocity 數據、讓 retrospective 失去教學價值。犧牲「單一 sprint 看起來成功」，保 sprint 容器紀律 |
-| PM × AI 決策邊界成文化（CLAUDE.md §3） | 決策層（scope / business rule / data model / UX trade-off）歸 PM；implementation detail 歸 Claude Code 自主，事後以 commit body 回報 | PM 注意力是稀缺資源，不被實作細節稀釋；同 junior engineer 授權模型，但邊界必須更明確——LLM 不會像人一樣 push back。每個 commit 附自主決策清單，權責可回溯 |
-| 每 Task 一 commit，不合併 mega-commit | commit 粒度對應 PM 的工作拆解邏輯 | 犧牲 commit 數量的「乾淨」，換 repo review 時能讀出拆解思路 |
-| 完成即凍結（M4 後, 2026-07-10） | RSVP-7/8 + docs 同步完成後專案凍結，僅面試實戰回饋驅動變更 | Portfolio 的職責是把人送進面試房間，不能替代面試表現；無限打磨 side project 是另一種逃避。收檔標準先寫死，防 scope 蔓延回頭吃掉求職時間 |
+| **Sprint v2 closed honestly at 0 of 4 shipped** | Sprint v2 (5/13–5/22) was interrupted by a pre-scheduled trip (5/23–5/31). It was closed as-is at 0/4 and a new Sprint v3 opened labelled Recovery, rather than extending v2's dates | Retroactively moving sprint dates is a ScrumBut anti-pattern: it contaminates velocity data and strips the retrospective of its teaching value. Gave up "one sprint that looks successful" to keep the sprint container meaningful |
+| PM × AI decision boundary written down (CLAUDE.md §3) | The decision layer — scope, business rules, data model, UX trade-offs — belongs to the PM. Implementation detail is Claude Code's to decide, reported afterwards in the commit body | PM attention is the scarce resource and must not be diluted by implementation detail. The delegation model resembles working with a junior engineer, but the boundary has to be more explicit — an LLM will not push back the way a person does. Every commit carries its self-decided list, so responsibility stays traceable |
+| One commit per task, no mega-commits | Commit granularity mirrors how the work was broken down | Gave up a "clean" low commit count in exchange for a history that reads as a decomposition |
+| Freeze on completion, after M4 (2026-07-10) | Once M4 closes, the current scope freezes; further work resumes from the Phase 2 backlog rather than from mid-flight additions | Defining the stopping point in advance is what prevents scope creep from running indefinitely. Endless polishing of a side project is its own form of avoidance |
 
-## 技術
+## Technical
 
-| 決策 | What | Why 與 Trade-off |
+| Decision | What | Why and trade-off |
 |---|---|---|
-| Token-scoped RPC 堵 PII 洞（2026-06-03） | 狀態頁不直讀 `registrations`；`SECURITY DEFINER` RPC（固定 `search_path`）只回單筆，撤銷 anon 整表 SELECT | 公開的 anon key 原本可以 dump 整份名單（姓名/email/電話）；多一層 RPC 與 grant 管理成本，換掉一個真實的 PII 外洩面 |
-| RLS 是 enforcement boundary，proxy 只做 UX（2026-06-09） | `proxy.ts` 只負責未登入 → `/admin/login` redirect；權限強制全在 DB 層 RLS | Next.js 16 指引：proxy 管 routing 不管 auth。proxy 被繞過頂多看到空殼頁、撈不到資料。放棄「middleware 擋一層」的安全感錯覺 |
-| Policy 必配 GRANT（anon saga 教訓） | row-level policy 存在但 table-level GRANT 缺失時，請求在 RLS 評估前就 401；migration 一律兩者同時寫 | 本 repo 踩過兩次的坑升級為規約；migration 前先 introspect（`pg_policies` + `information_schema`），不從文件圖推斷 schema |
-| Grant 是 per-role 的（2026-07-07 教訓） | status RPC 原只 grant `anon`；登入中的 admin 開狀態頁時以 `authenticated` 身分執行 → 42501 被吞成 404，耗掉一整天 | 新增 RPC 時明確決定 grant 給哪些 role；error 必須 log、不可吞成 404。「同一頁 A 開得了 B 開不了」先問「誰登入了」 |
-| Server Action 寫入路徑 + idempotent batch | 批次審核走 Server Action；只更新真正變動的列，same-status 為 no-op、可逆；`status_updated_at` 只在真轉換時由 app 層顯式寫入（不用 DB trigger） | 邏輯集中在可讀的 server code（public repo 可讀性），時間戳語意精確（「上次真實狀態變更」）。放棄 trigger 的「自動保險」，換行為透明 |
-| QR = 含 token 的完整狀態頁 URL | QR 編碼 `/status/{token}` 完整 URL，client-side 以 `qrcode.react` 渲染 | 任何手機相機都能掃開（無需專用 app）；未來 scanner 直接重用同一 URL。放棄更短的自訂 payload |
-| Token 用 nanoid（21 字元 URL） | 報名者不建帳號，以不可枚舉 token URL 自助查詢 | 消除 enumeration 風險 + 免掉 attendee 端 auth 整套成本；放棄「好記的短網址」 |
-| zod 鎖 v3.25.76 | zod v4 與 `@hookform/resolvers` v5 不相容，pin 在 v3 | 版本鎖定寫進 CLAUDE.md，防 AI 或未來的自己「順手升級」踩雷 |
-| status 配色單一對照常數 | `STATUS_STYLES` 一個常數管全部狀態視覺；`checked_in` 刻意不加，等 Phase 2 能顯示時才進 | 單一事實源防止散落的 hardcode；不為還沒上的功能預留死 code |
-| Hosting：Netlify（非決策點） | 早期文件並列 Vercel / Netlify 兩個候選，實際部署走 Netlify（git-linked auto deploy），為唯一 production 目標 | 兩者對本專案功能等價（git-linked、preview deploy、免費額度都夠用），不構成真正的 trade-off，故未做正式評選。記錄在此是為了誠實：不是每個選擇都是決策，假裝它是反而稀釋真決策的份量 |
+| Token-scoped RPC closes a PII hole (2026-06-03) | The status page does not read `registrations` directly. A `SECURITY DEFINER` RPC with a fixed `search_path` returns one row, and anonymous `SELECT` on the table is revoked | The public anon key could otherwise dump the entire list — names, emails, phone numbers. Paid one extra RPC plus grant management to close a real PII exposure |
+| RLS is the enforcement boundary; the proxy only handles UX (2026-06-09) | `proxy.ts` only redirects logged-out visitors to `/admin/login`. All authorization is enforced in the database through RLS | Next.js 16 guidance: the proxy handles routing, not auth. If the proxy is bypassed the visitor sees an empty shell and retrieves no data. Gave up the false reassurance of "middleware blocks it" |
+| Every policy needs a matching GRANT (the anon saga) | When a row-level policy exists but the table-level GRANT is missing, the request fails with 401 before RLS is even evaluated. Migrations must always write both | A trap this repo hit twice, promoted to a rule. Introspect before writing a migration (`pg_policies` plus `information_schema`) rather than inferring the schema from a diagram |
+| Grants are per-role (2026-07-07) | The status RPC was granted to `anon` only. A signed-in admin opening the status page executed as `authenticated`, so 42501 was swallowed as a 404 and cost a full day | When adding an RPC, decide explicitly which roles receive the grant. Errors must be logged, never swallowed into a 404. If one person can open a page and another cannot, ask who is logged in first |
+| Server Action write path, idempotent batches | Batch review runs through a Server Action that updates only genuinely changed rows. A same-status action is a no-op and reversible. `status_updated_at` is written explicitly by the application only on a real transition, not by a database trigger | Keeps the logic in readable server code, which matters in a public repo, and gives the timestamp precise meaning — the last real status change. Gave up the trigger's automatic safety net in exchange for transparent behaviour |
+| The QR encodes the full status-page URL | The QR carries the complete `/status/{token}` URL, rendered client-side with `qrcode.react` | Any phone camera opens it, with no dedicated app, and a future scanner reuses the same address. Gave up a shorter custom payload |
+| `nanoid` tokens (21-character URLs) | Attendees create no account; they look their registration up through a non-enumerable token URL | Removes the enumeration risk and avoids an entire attendee-side auth stack. Gave up a memorable short URL |
+| zod pinned to v3.25.76 | zod v4 is incompatible with `@hookform/resolvers` v5, so the version is pinned to v3 | The pin is recorded in CLAUDE.md to stop an AI — or a future self — from upgrading it in passing |
+| One constant governs status colour | `STATUS_STYLES` owns every status visual. `checked_in` is deliberately absent until Phase 2 can display it | A single source of truth prevents hardcoded values scattering. No dead code reserved for features that have not shipped |
+| Hosting: Netlify (not a decision point) | Early documents listed Vercel and Netlify as candidates. The actual deployment is Netlify, git-linked with auto deploy, and it is the only production target | For this project the two are functionally equivalent — git-linked deploys, preview deploys, and sufficient free tiers — so there was no genuine trade-off and no formal evaluation happened. This is recorded for honesty: not every choice is a decision, and pretending one is dilutes the weight of the real ones |
 
-## 修訂 Amendments
+## Amendments
 
-> 對上方既有條目的後續修正。**原條目一律保留不動** —— 它們是當時的真實決策紀錄，
-> 被推翻本身就是紀錄的一部分。
+> Follow-up corrections to the entries above. **Original entries are never modified** — they are the
+> real record of what was decided at the time, and being overturned is part of that record.
 
-| 日期 | 修訂 |
+| Date | Amendment |
 |---|---|
-| 2026-07-28 | Email notifications promoted from Phase 2 backlog to RSVP-7 (Sprint v5). Supersedes the earlier downgrade entry. Rationale: guest access continuity after approval; see PRD v0.5 §4. |
-| 2026-07-29 | 修正「Grant 是 per-role 的」條目的第二次復發。`/register` 用的是 session-aware 的 `createBrowserClient`，所以帶著 admin session 的瀏覽器會以 `authenticated` 身分送出報名，而該 role 從未被 grant `SELECT ON events` / `INSERT ON registrations` → 42501。**改用 code 修法（新增 anon-only client）而非 SQL 修法（grant `authenticated`）**：後者會讓 RSVP-8 的 read-only demo admin 取得 INSERT 權限，破壞該保證，因為它的 restrictive policy 只擋 UPDATE/DELETE。同時把錯誤代碼帶進 error UI —— 這次故障之所以拖 12 天，正是因為 generic 文案讓「權限錯誤」和「連線錯誤」長得一模一樣。 |
-
----
-
-*對應：本表為 RJ_Interview_Materials 決策素材表的公開版。面試「講一個你做過的取捨」題型，優先取用粗體標記的兩則（batch-only pivot、Sprint v2 誠實關閉）。*
+| 2026-07-28 | Email notifications promoted from the Phase 2 backlog to RSVP-7 (Sprint v5), superseding the earlier deferral. Rationale: guest access continuity after approval; see PRD v0.5 §4. |
+| 2026-07-29 | Second recurrence of "Grants are per-role". `/register` was using the session-aware `createBrowserClient`, so a browser carrying an admin session submitted as `authenticated` — a role never granted `SELECT ON events` or `INSERT ON registrations`, producing 42501. **Fixed in code (a new anon-only client) rather than in SQL (granting `authenticated`)**: the SQL route would have given the read-only demo admin INSERT permission and broken that guarantee, since its restrictive policy only blocks UPDATE and DELETE. Error codes were surfaced in the UI at the same time — this failure ran for 12 days precisely because generic copy made a permission error and a connection error look identical. |
+| 2026-08-03 | The 20-second batch-action GIF, part of the read-only demo decision above, was cancelled and never shipped. The landing carries three static screenshots instead. `TODO(PM): rationale.` |
+| 2026-08-04 | **The v9 brand system replaced shadcn defaults.** A single `#00F666` accent on a neutral ramp, Archivo / Inter / Geist Mono, dark guest-facing surfaces, and dot-plus-label status indicators, superseding the earlier position that the project would not define its own brand colour or typeface. `TODO(PM): rationale.` This entry closes a gap: the change shipped without a decision record, which is why CLAUDE.md §8.6 contradicted the codebase for three weeks. |
+| 2026-08-27 | **Language layering reversed.** Everything in the public repository is now English — source, documentation, UI copy, commit messages, and repo metadata. The 2026-07-10 entry above scoped its Chinese to the landing narrative only; once `docs/` moved into the repo the effect spread to the whole documentation set, which the original decision never considered. `TODO(PM): rationale.` Consequences: the Noto Sans TC fallback comes out of the font stack, and the `<html lang="en">` / Chinese-body mismatch — a WCAG 3.1.1 violation — is resolved. Existing commit messages are not rewritten; history is a record, not a document. |
