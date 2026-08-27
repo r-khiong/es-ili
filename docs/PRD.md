@@ -190,7 +190,7 @@ Around 90% of this product sits behind an admin login, so a first-time visitor a
 - Reversing a decision (approve → reject or back) is a real transition and therefore sends again
 - Transport carries forward the pre-existing assessment: **Gmail SMTP preferred over Resend** (see `docs/decision-log.md`)
 - Single-event scope (see trade-off (a))
-- **Event information source: `TBD — pending PM decision`** — pending the resolution of how `events` and `lib/event.ts` divide responsibility
+- **Event information source:** how `events` and `lib/event.ts` divide responsibility is tracked as OQ-12 (§7)
 
 **Trade-offs (locked by PM)**
 ```
@@ -311,6 +311,7 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | OQ-8 | Inline Remark editing in dashboard? | Phase 2 (MVP shows Remark read-only) |
 | OQ-9 *(v0.4)* | Landing page language? | ✅ Resolved 2026-08-27 — English throughout. Supersedes the 2026-07-10 resolution (Chinese body, English UI terms); see `docs/decision-log.md` Amendments |
 | OQ-10 *(v0.4)* | Where do product docs live? | ✅ Resolved 2026-07-10 — in-repo `docs/` (git history = version trail); Notion keeps private material only |
+| OQ-12 *(v0.6)* | Event information source — how `events` and `lib/event.ts` divide responsibility | Open — resolves with RSVP-7, which is the first story to read event metadata outside `/register` |
 | OQ-11 *(v0.4)* | Read-only demo vs interactive sandbox? | ✅ Resolved 2026-07-10 — read-only for Phase 1; sandbox with reset stays in the Phase 2 backlog. The batch-action GIF that accompanied this decision was cancelled 2026-08-03 and never shipped (see `docs/decision-log.md` Amendments) |
 
 ---
@@ -347,7 +348,7 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | v0.2 | 2026-05-07 | Supabase Auth added to MVP; scan page brought into MVP; Jira board + AC built |
 | v0.3 | 2026-06-06 | Dashboard columns realigned to built schema; Business Card upload removed; organizer auth resolved to Supabase Auth; on-site check-in confirmed manual (scanner → Phase 1.5); status filter kept, free-text search → Phase 2; multi-event clarified (schema-ready, single-event UI); idempotent / reversible batch rule and `select-all = current page` documented |
 | **v0.4** | **2026-07-10** | RSVP-4/5 marked **Done**, AC realigned to as-built: **batch-only pivot (2026-06-09)** documented — per-row buttons removed; `registrations.name` (not `full_name`); **no pagination in MVP** (moved to Phase 2). RSVP-6 **moved to Phase 2** (2026-07-07). Added **Reviewer persona**, **G5**, **RSVP-7 Story Landing**, **RSVP-8 Read-only Admin Demo**. Security model: per-role grant lesson (7/7) + demo-user restrictive carve-out. Docs moved into repo (`docs/`); OQ-9/10/11 resolved. M4 Visibility milestone + post-M4 freeze |
-| **v0.6** | **2026-08-27** | **Editorial revision; no scope change.** Document converted to English throughout. §1 *Portfolio Layer* restated as the **Visibility Layer** and the §3 *Reviewer* persona as the **First-time visitor** — same product problem, stated from the product's side rather than from an evaluator's. **OQ-9 re-resolved**: English throughout, superseding the 2026-07-10 language split (see `docs/decision-log.md` Amendments). OQ-11 corrected — the batch-action GIF was cancelled 2026-08-03 and never shipped. Abbreviation `PjM` normalised to `PM`. *Not covered here:* the §2 G5 and §6 M4 status corrections are carried by PR #2; the document title still reads RSVP, pending the combined naming decision noted in `docs/decision-log.md`. |
+| **v0.6** | **2026-08-27** | **Editorial revision; no scope change.** Document converted to English throughout. §1 *Portfolio Layer* restated as the **Visibility Layer** and the §3 *Reviewer* persona as the **First-time visitor** — same product problem, stated from the product's side rather than from an evaluator's. **OQ-9 re-resolved**: English throughout, superseding the 2026-07-10 language split (see `docs/decision-log.md` Amendments). OQ-11 corrected — the batch-action GIF was cancelled 2026-08-03 and never shipped. Abbreviation `PjM` normalised to `PM`. Scope held to language and framing; no status field or milestone entry is restated. |
 | **v0.5** | **2026-07-28** | **RSVP-7 realigned to Jira as Email Notifications.** The v0.4 *RSVP-7 Story Landing* story is **removed as superseded** — the root landing is a **non-story track (descriptive branch)**, not a user story (decision **2026-07-22**); Jira is canonical for keys and this PRD follows Jira. Trade-offs (a) single-event scope / (b) no per-record resend, failures log-only → Phase 1.5 / (c) no `status` enum extension, send state as a nullable timestamp — locked by PM. **RSVP-8 → Done** (merged 2026-07-14). Email removed from §2 Non-Goals and from the §8 backlog (**SMS stays deferred**); new **Phase 1.5** bucket for resend. Added **G6**, **M5 — Notifications**, and provisional `registrations.notified_at` to the §5 data model. *Supersedes draft revisions discussed 2026-07-22/23 (chat-side); remaining content port tracked separately.* Open: RSVP-7 AC awaits reconciliation against the Jira ticket; event information source `TBD — pending PM decision` |
 
 ---
@@ -391,7 +392,7 @@ Out of Scope:
 * Send failure: logged server-side only; the status update still commits
 * Transport: Gmail SMTP (preferred over Resend — see docs/decision-log.md)
 * Single-event scope
-* Event information source: TBD — pending PM decision
+* Event information source: see OQ-12 (§7)
 
 Out of Scope:
 * Per-record resend → Phase 1.5
