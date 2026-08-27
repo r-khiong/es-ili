@@ -238,7 +238,7 @@ export default function RegisterPage() {
           </div>
 
           <p className="mt-7 text-[11.5px] leading-[1.7] text-[#9E9E9E]">
-            By submitting this form you agree this is a portfolio demo site. The
+            By submitting this form you agree this is a demo site. The
             details you enter are used only to review this demo registration,
             are never shared with third parties or used for marketing, and are
             cleared periodically.

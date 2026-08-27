@@ -10,7 +10,7 @@ const MONO = "font-mono";
 const DISP = "font-heading";
 const PAD = "px-[22px] md:px-10";
 
-const REPO_URL = "https://github.com/r-khiong/rsvp";
+const REPO_URL = "https://github.com/r-khiong/es-ili";
 const GITHUB_PROFILE_URL = "https://github.com/r-khiong";
 const LINKEDIN_URL = "https://www.linkedin.com/in/renatajiang";
 
@@ -249,7 +249,7 @@ export default function Home() {
                 <span
                   className={`${MONO} mt-1 block text-[10px] uppercase tracking-[0.06em] text-[#717171]`}
                 >
-                  github.com/r-khiong/rsvp
+                  github.com/r-khiong/es-ili
                 </span>
               </span>
               <span
