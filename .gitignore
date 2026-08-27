@@ -49,3 +49,6 @@ next-env.d.ts
 
 # Local Netlify folder
 .netlify
+
+# Local working document, not published
+docs/PROJECT-MAP.md
