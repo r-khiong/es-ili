@@ -2,9 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { DemoEntryButton } from "@/components/story/demo-entry-button";
 
-// RSVP root landing, Paper Light editorial (RJ mockup v9, 2026-07-31).
+// Root story landing, Paper Light editorial (v9 mockup, 2026-07-31).
 // Fonts come from layout.tsx — this page loads none of its own.
-// Copy is locked to the v9 spec; do not reword without a PjM decision.
+// Copy is locked to the v9 spec; do not reword without a PM decision.
 
 const MONO = "font-mono";
 const DISP = "font-heading";
@@ -400,8 +400,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Portfolio links kept reachable from the footer alongside the
-          copyright line the spec specifies. */}
+      {/* Author links sit alongside the copyright line the spec specifies. */}
       <footer className={`${PAD} py-7`}>
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
           <p

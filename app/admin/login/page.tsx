@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
     router.refresh();
   }
 
-  // RSVP-8 reviewer entry. On success the server action redirects, so this
+  // Read-only demo entry. On success the server action redirects, so this
   // callback only ever observes the failure branch.
   function handleDemoSignIn() {
     setServerError(null);
