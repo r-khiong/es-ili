@@ -28,7 +28,17 @@ export function NavLogo() {
   }
 
   return (
-    <button type="button" aria-label="és'ilî — back to top" onClick={handleClick}>
+    // Affordance is not optional here. A <button> gets the browser's default
+    // arrow cursor and this project's CSS adds none, so without these classes
+    // the mark looks and feels exactly like the static image it replaced —
+    // which is how it shipped unnoticed. Hover and focus mirror the nav links
+    // beside it (transition + #0A0A0A), so the whole row behaves as one.
+    <button
+      type="button"
+      aria-label="és'ilî — back to top"
+      onClick={handleClick}
+      className="cursor-pointer rounded-sm transition-opacity hover:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A] focus-visible:ring-offset-2"
+    >
       <Image
         src="/brand/mark-primary-light.svg"
         alt=""
