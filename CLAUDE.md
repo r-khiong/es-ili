@@ -1,7 +1,18 @@
 # CLAUDE.md
 
-> Ground rules for Claude Code when working in this repo. Loaded automatically at startup, so
-> individual sub-task prompts do not need to re-paste this context.
+> **What this file is.** The working agreement for the AI implementation layer. It is loaded
+> automatically into every Claude Code session, so it answers exactly four questions and nothing
+> else:
+>
+> 1. **What is locked** — stack versions, conventions, and patterns that must not be re-litigated (§2)
+> 2. **Who decides what** — the boundary between PM judgment and implementation detail (§3, §6)
+> 3. **What has already gone wrong** — traps that cost real time and must not recur (§5)
+> 4. **What must not regress** — design and quality invariants (§8), naming rules (§9)
+>
+> **What this file is not.** Not a status board, not a roadmap, not product narrative. Anything that
+> turns false as work proceeds belongs elsewhere: ticket status in Jira, delivery history in
+> `CHANGELOG.md`, feature specs in `docs/PRD.md`, reasoning and trade-offs in `docs/decision-log.md`.
+> A stale line here is not untidiness — it is an incorrect instruction handed to every future session.
 >
 > Maintainer: Renata Jiang (rj.khiong@gmail.com)
 > Last updated: 2026-08-27
@@ -42,20 +53,22 @@ large-scale exhibitions, and international technology clients.
 
 **Does not write code, but owns the technical trade-offs.** See §3 for how decision rights split.
 
-### 1.4 Current phase
+### 1.4 Where to look things up
 
-MVP build and ship are closed. Feature specs live in `docs/PRD.md` §6; delivery history lives in
-`CHANGELOG.md`; ticket status lives in Jira.
+This file carries no status. Route the question to its authority:
 
-Current phase: **M4 Visibility**. The root story landing shipped 2026-08-04 (PR #1); the site was
-renamed to és'ilî on 2026-08-25 (PR #3). Remaining scope: the admin v9 redesign, the wrap-up items,
-and artifact chain alignment.
+| Question | Authority |
+|---|---|
+| What is the state of a ticket? | Jira |
+| What has actually shipped? | `CHANGELOG.md`, cross-checked against git history |
+| What is a feature supposed to do? | `docs/PRD.md` |
+| Why is it built this way? | `docs/decision-log.md` |
+| What is the live site running? | The Netlify production deploy, not `main`'s HEAD |
+| What do the design tokens resolve to? | `app/globals.css` |
 
-None of this work maps to a user story key. **Do not refer to it as RSVP-7 or RSVP-8** — those keys
-mean something else, see §9.3.
-
-M4 closing freezes the current scope. Work after that resumes from the Phase 2 backlog (§7.3), not
-from mid-flight impulse.
+Current milestone work — the visibility layer and the admin redesign — does **not** map to a user
+story key. **Do not refer to it as RSVP-7, RSVP-8, or RSVP-9**; those keys mean something else on
+the board. See §9.3.
 
 ---
 
@@ -156,8 +169,8 @@ story key for work that does not belong to that story — see §9.3.**
 
 **One commit per task.** Do not roll several tasks into a mega-commit.
 
-Reason: commit history mirrors how the PM broke the work down, and it needs to read well when
-someone reviews the repo during an interview.
+Reason: the commit history is the record of how the work was decomposed. Rolled-up commits destroy
+that record and make a single change impossible to revert on its own.
 
 ### 4.3 Commit message rules
 
@@ -200,7 +213,7 @@ someone reviews the repo during an interview.
 | A commit body claiming a "manual patch" that was never actually saved | Before committing, grep or read the file to confirm its contents match what the commit body claims. If a tool permission fails, retry — never carry on regardless |
 | A commit body claiming "cross-package compatible" when tsc never actually checked it | After installing a cross-layer dependency, add a minimal reference point outside the new file and run tsc. For data-layer SDKs (supabase, prisma, any ORM), the check must include a chained API call such as `.from(table).insert()` — importing the module is not enough to trigger the type chain |
 | Treating memory as verification and writing assumptions as spec | Factual statements carry a `[verified]` / `[assumed]` / `[external]` tag. **Anything untagged counts as assumed** and must be verified before acting on it |
-| Hand-written docs mirroring Jira status, which always goes stale | This file does not maintain a task backlog — see §7.2 |
+| Hand-written docs mirroring Jira status, which always goes stale | This file does not maintain a task backlog — see §7.1 |
 
 ---
 
@@ -227,6 +240,9 @@ Claude Code then:
 - [ ] The dev server runs and the target page loads correctly
 - [ ] Committed, with push authorization obtained
 - [ ] The commit message carries the self-decided implementation details bullets
+- [ ] **Every document describing the changed behaviour is updated in the same commit or PR.** A
+      change to user-visible behaviour that leaves a doc describing the old behaviour has not
+      shipped — it has created a false statement. Grep for the thing you changed before committing
 
 ### 6.3 Escalation rules
 
@@ -259,56 +275,32 @@ Report back at the Block level by default, not per sub-task:
 
 ---
 
-## 7. Sprint Archive and Phase 2 Boundary
+## 7. Scope Boundary
 
-### 7.1 The closed MVP sprints (historical text, no longer updated)
+### 7.1 This file holds no task backlog
 
-Original sprint goal: ship a demo URL with four user stories (RSVP-3 through RSVP-6) working
-end-to-end, a Netlify production deploy, a README, and a public repo.
+Jira is the single authority for any ticket's status, scope, and acceptance criteria. A hand-written
+status mirror always goes stale, and a stale status in an auto-loaded file is an incorrect
+instruction. Route lookups through the table in §1.4.
 
-The actual result differed from that goal in two ways, kept here as a scope-decision record:
+### 7.2 Outside current scope (not being built)
 
-- RSVP-6 (on-site check-in) was moved to Phase 2 by PM decision on 2026-07-07, so three user
-  stories shipped (RSVP-3 / 4 / 5), not four.
-- The delivery ticket was Jira RSVP-13, now Done.
-
-This section is not updated further. Sprint names and dates are authoritative in Jira.
-
-### 7.2 Task status
-
-**This file does not maintain a task backlog.** Jira is the single authority for any ticket's
-status, scope, and acceptance criteria.
-
-Reason: a hand-written status mirror always goes stale, and this file is loaded automatically into
-every Claude Code session — a stale status is an incorrect instruction.
-
-- Need a ticket's status → check Jira
-- Need to know which tickets belong to a milestone → check Jira, cross-referenced with `docs/PRD.md` §6
-- Need to know what a feature actually shipped → read `CHANGELOG.md`
-
-### 7.3 Phase 2 boundary (not being built)
-
-The following are explicitly outside M4. **Stop any implementation impulse that approaches them.**
+The following are **not** in the current phase. Stop any implementation impulse that approaches them
+and escalate instead — adding one of these is a scope change under §3.2. The current phase closes
+when its listed work is done, not on a date; anything below is picked up after that, not during.
 
 - Email notification / SMS
 - Automated filtering rules
 - Calendar integration (.ics export)
 - Audience definition automation
 - Multi-language i18n
-- Check-in (both manual check-in and a real QR scanner are Phase 2; the QR code already encodes a
-  token the scanner can parse)
+- Check-in — both manual check-in and a camera QR scanner. The QR already encodes a token the
+  scanner can parse, so neither needs a backend change when it is picked up
 - Performance optimization
 - SEO
-- A daily auto-reset job (PM decision 2026-08-04: not doing it. Consequently, no UI copy may claim
-  that data resets daily)
+- An automated demo-data reset job. **Not being built** — consequently, no UI copy may claim that
+  registration data is cleared or reset on any schedule
 - Landing-page analytics and outcome tracking
-
-### 7.4 Freeze condition
-
-M4 has no date-based deadline. The freeze condition is that every item in M4 scope is closed:
-the admin v9 redesign, English documentation, the wrap-up items, and artifact chain alignment.
-
-After the freeze, changes are driven by real interview feedback, not by impulse.
 
 ---
 
@@ -383,21 +375,21 @@ not pick a side yourself.
 | Motion | shadcn defaults only (button hover, focus ring). Do not author custom animation |
 | Mobile breakpoint | `lg` (1024px) |
 
-Logo asset usage is documented in the brand kit README. The key points:
+**The product name is és'ilî**, on every surface: `<title>`, README heading, admin header, logo
+`alt` text, event-card organizer, OG share image, and package name. The word "RSVP" survives only as
+a common noun in body copy — the category word, never the product's name. The rationale sits in
+`docs/decision-log.md` under the brand entry; do not restate it here.
 
-- The **V2 "î" monogram** is primary: in-app nav, favicon, app icon, OG avatar, email header mark
-- The **V3 lockup** (symbol plus the RSVP wordmark) is **used on the landing nav only**, so a
-  cold reader still sees a recognizable RSVP wordmark
-- The **V1 wordmark "és'ilî"** is used on the About concept section and in the footer
+The one exception is the Netlify subdomain `r-khiong-rsvp.netlify.app`, which stays as it is. That
+is a recorded decision, not an unfinished rename — see the comment in `lib/site.ts` before touching it.
 
-The site title (`<title>`) and the README heading are **és'ilî** (PM decision 2026-08-25, reversing
-the 2026-08-04 position that és'ilî was a concept mark only). The admin header, the logo alt text,
-and the OG image still read RSVP, pending a single combined decision.
+Logo asset usage is documented in the brand kit README. As built:
 
-> **Pending follow-up:** the Noto Sans TC rows above describe the code as it stands today. Once the
-> landing copy is in English (see §1.5) the font is unused and both rows come out, in the same
-> commit that removes the Chinese copy. Do not remove them earlier — that would make this section
-> false in the other direction. Tracked as a Jira Task; this note is not the only tracker.
+| Asset | Where |
+|---|---|
+| **V2 "î" monogram** — `public/brand/mark-primary-{light,dark}.svg` | Every nav: landing (light), `/register` and `/status` (dark). Also `app/favicon.ico` and `app/apple-icon.png` |
+| **V1 wordmark "és'ilî"** — `public/brand/wordmark-esili-light.svg` | The About concept section on the landing |
+| **Lockup** (monogram plus wordmark) | `app/opengraph-image.png` only. Baked PNG, no SVG source in the repo |
 
 ### 8.7 /register layout invariants
 
@@ -421,7 +413,9 @@ When you need the exact copy, read the implementation. Do not infer it from this
 - The Netlify production URL resolves (`r-khiong-rsvp.netlify.app`)
 - The README is complete: problem, tech stack, live demo URL, local setup, roadmap, decision log
 - The repo is public
-- Demo data is seeded: `supabase/seed.sql`, 4 rows, covering Submitted / Reviewed / Approved / Rejected
+- Demo data is seeded: `supabase/seed.sql`, 4 rows — 2 Submitted (`pending`) / 1 Approved / 1 Rejected.
+  There is no seeded "Reviewed" row and there cannot be: `Reviewed` is a timeline step on the status
+  page, never a stored value. The DB column holds `pending` | `approved` | `rejected` only
 
 ### 8.9 Explicitly not pursued
 
@@ -429,7 +423,7 @@ When you need the exact copy, read the implementation. Do not infer it from this
 - i18n
 - SEO meta tags
 - Advanced accessibility (WCAG AA is the target; AAA is not)
-- Phase 2 backlog features (see §7.3)
+- Anything in the out-of-scope list (see §7.2)
 
 ### 8.10 Deploy and environment (Netlify)
 
@@ -523,7 +517,7 @@ placeholder tickets are created.
 
 - Only shipped functionality may appear in landing copy or in any external description of the product.
 - UI copy must not describe behavior that is not implemented (for example, "data resets daily").
-- No decision may leave a reviewer with a false impression of the product's state.
+- No document, commit, or UI string may leave a reader with a false impression of the product's state.
 
 ---
 
@@ -540,9 +534,10 @@ placeholder tickets are created.
 
 ### 10.2 What never goes in here
 
-- Personal schedule or capacity planning (lives in Notion)
-- Personal career materials
+- Ticket status, task backlogs, progress percentages, or dates that expire
+- Product narrative or anything written for an outside reader — that is the README's job
+- A decision's reasoning. Record the rule here and the reasoning in `docs/decision-log.md`; do not
+  keep two copies that can drift apart
 - Per-story acceptance criteria (those are pasted into each sub-task prompt)
+- Personal schedule or capacity planning
 - Commercially sensitive information (the maintainer's email is a deliberate exception)
-- **Anything that turns false as implementation moves forward** (task backlogs, progress percentages,
-  page-by-page copy)
