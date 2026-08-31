@@ -3,7 +3,7 @@ import { Archivo, Geist_Mono, Inter, Noto_Sans_TC } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-// Single source for every font in the project (RSVP-9). Pages must not call
+// Single source for every font in the project. Pages must not call
 // next/font themselves — a per-page load ships a second copy of the same family
 // and splits the CSS-variable namespace, which is how this repo ended up with
 // seven webfonts across three files.
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
   // Without metadataBase, Next resolves app/opengraph-image.png against
   // http://localhost:3000 and every shared link ships a dead preview image.
   metadataBase: new URL(SITE_URL),
-  title: "RSVP",
-  description: "Event RSVP & check-in system",
+  title: "és'ilî",
+  description: "Event registration and guest management",
 };
 
 export default function RootLayout({

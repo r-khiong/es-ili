@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
     router.refresh();
   }
 
-  // RSVP-8 reviewer entry. On success the server action redirects, so this
+  // Read-only demo entry. On success the server action redirects, so this
   // callback only ever observes the failure branch.
   function handleDemoSignIn() {
     setServerError(null);
@@ -60,7 +60,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md space-y-6">
         <div className="flex items-center justify-center gap-2 font-semibold">
           <CalendarCheck className="h-5 w-5" />
-          <span className="text-lg">RSVP</span>
+          <span className="text-lg">és&apos;ilî</span>
         </div>
 
         <Card>

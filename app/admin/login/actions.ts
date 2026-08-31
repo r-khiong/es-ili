@@ -7,7 +7,7 @@ export interface DemoSignInFailure {
   error: string;
 }
 
-// One-click reviewer entry (RSVP-8). Credentials live ONLY in server-side env
+// One-click read-only demo entry. Credentials live ONLY in server-side env
 // (DEMO_ADMIN_EMAIL / DEMO_ADMIN_PASSWORD) so they never reach the client
 // bundle. Read-only is enforced by a restrictive RLS policy at the database —
 // this action only signs in; it grants nothing.

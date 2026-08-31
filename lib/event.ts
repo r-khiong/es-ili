@@ -1,6 +1,6 @@
 // Single source of truth for the demo event's metadata. Pure constants — no env
 // read, no DB round-trip. The seeded row in supabase/seed.sql only carries the
-// event name; everything a reviewer-facing surface needs to render (when, where,
+// event name; everything a public surface needs to render (when, where,
 // how to get there) lives here so no template re-types it.
 //
 // Mirrors the module-level constant pattern of lib/status.ts and lib/site.ts.
@@ -17,7 +17,7 @@ export type EventInfo = {
   /**
    * Google Maps query link, not a place-ID pin. A query link keeps working if
    * the venue's listing is renamed or re-registered; the trade-off is that it
-   * lands on a search result rather than an exact pin (PjM decision, v9).
+   * lands on a search result rather than an exact pin (PM decision, v9).
    */
   readonly mapsUrl: string;
   readonly description: string;
@@ -35,7 +35,7 @@ export const EVENT: EventInfo = {
     "https://www.google.com/maps/search/?api=1&query=Aspace+YS+No.+1+Yumen+St+Zhongshan+Dist+Taipei",
   description:
     "An evening of talks and open networking for digital marketing practitioners.",
-  organizerName: "RSVP",
+  organizerName: "és'ilî",
 };
 
 // Formatting is composed from separate Intl formatters rather than
