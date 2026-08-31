@@ -31,21 +31,14 @@ product documentation in the repo.
 
 - `/register` rebuilt as a v9 dark single-column form (previously a light split screen)
 - `/status/[token]` rebuilt with a save-link box, a three-step timeline, and a copy button
-- Site title and README heading renamed to **és'ilî**
-- Repository renamed to `r-khiong/es-ili`
-- Documentation converted to English throughout
+- Brand position reworked: the product is **és'ilî**, with its own accent, type stack, and surface
+  palette in place of shadcn defaults. Repository renamed to `r-khiong/es-ili`
 
 ### Fixed
 
 - Registration submitted as `anon` instead of inheriting an admin session, and error codes surfaced
   in the UI. A browser that had opened the admin console was hitting `42501` on `/register` while
   anonymous visitors were unaffected — hidden for 12 days by generic error copy
-- Landing nav logo returns to the top of the page and honours `prefers-reduced-motion`
-
-### Still open
-
-- Admin console v9 redesign
-- Artifact chain alignment (milestone tags, this changelog)
 
 ---
 
