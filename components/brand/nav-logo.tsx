@@ -1,0 +1,54 @@
+"use client";
+
+import Image from "next/image";
+
+// Landing nav monogram. PR #1 shipped it as a static mark; this wraps it in a
+// button so the mark also takes the visitor back to the top of the page.
+//
+// A plain anchor was rejected: it would leave /#top in the URL, and the root
+// address is what goes on the resume and in the GitHub About field.
+//
+// The mark is decorative here — the button carries the accessible name, so the
+// image is hidden from assistive tech instead of naming itself a second time.
+// That name has to include the product name: CLAUDE.md §8.6 requires és'ilî on
+// every logo, and with alt="" the button label is the only place left to say it.
+export function NavLogo() {
+  function handleClick() {
+    // Read the motion preference at click time, not at render time: the server
+    // has no window, and reading it here also picks up an OS-level change made
+    // mid-session without needing an effect subscription.
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    window.scrollTo({
+      top: 0,
+      behavior: prefersReducedMotion ? "instant" : "smooth",
+    });
+  }
+
+  return (
+    // Affordance is not optional here. A <button> gets the browser's default
+    // arrow cursor and this project's CSS adds none, so without these classes
+    // the mark looks and feels exactly like the static image it replaced —
+    // which is how it shipped unnoticed. Hover and focus mirror the nav links
+    // beside it (transition + #0A0A0A), so the whole row behaves as one.
+    <button
+      type="button"
+      aria-label="és'ilî — back to top"
+      onClick={handleClick}
+      className="cursor-pointer rounded-sm transition-opacity hover:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A] focus-visible:ring-offset-2"
+    >
+      <Image
+        src="/brand/mark-primary-light.svg"
+        alt=""
+        aria-hidden="true"
+        width={30}
+        height={32}
+        priority
+        unoptimized
+        className="h-[26px] w-auto"
+      />
+    </button>
+  );
+}
