@@ -10,6 +10,8 @@ import Image from "next/image";
 //
 // The mark is decorative here — the button carries the accessible name, so the
 // image is hidden from assistive tech instead of naming itself a second time.
+// That name has to include the product name: CLAUDE.md §8.6 requires és'ilî on
+// every logo, and with alt="" the button label is the only place left to say it.
 export function NavLogo() {
   function handleClick() {
     // Read the motion preference at click time, not at render time: the server
@@ -26,7 +28,7 @@ export function NavLogo() {
   }
 
   return (
-    <button type="button" aria-label="Back to top" onClick={handleClick}>
+    <button type="button" aria-label="és'ilî — back to top" onClick={handleClick}>
       <Image
         src="/brand/mark-primary-light.svg"
         alt=""
