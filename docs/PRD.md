@@ -1,15 +1,9 @@
-# RSVP — Product Requirements Document (Phase 1 MVP)
+# és'ilî — Product Requirements Document (Phase 1 MVP)
 
 > **Author:** Renata Jiang (r.khiong)
 > **Created:** 2026-04-16 · **Last updated:** 2026-08-27
 > **Status:** Active
 > **Version:** 0.6 (supersedes v0.5 / v0.4 / v0.3 / v0.2 / v0.1)
-
-> **What changed in v0.6 (see full changelog §9):** Editorial, no scope change. The document is
-> now entirely in English. The §1 *Portfolio Layer* is restated as the **Visibility Layer** and the
-> §3 *Reviewer* persona as the **First-time visitor** — the underlying product problem is unchanged
-> (90% of the product sits behind a login, so a first-time visitor cannot evaluate it). **OQ-9 is
-> re-resolved**: the landing is English throughout, superseding the 2026-07-10 language split.
 
 ---
 
@@ -26,11 +20,11 @@ Event organizers managing 50+ attendees still default to Google Forms plus manua
 
 ### Product Summary
 
-RSVP is a lightweight event registration and guest-management tool. Organizers collect applications, review and approve/reject attendees in batch, and verify attendees on-site — replacing the fragmented Google Form + email + spreadsheet workflow with a single streamlined system.
+és'ilî is a lightweight event registration and guest-management tool. Organizers collect applications, review and approve/reject attendees in batch, and verify attendees on-site — replacing the fragmented Google Form + email + spreadsheet workflow with a single streamlined system.
 
-### Visibility Layer (added in v0.4)
+### Visibility Layer
 
-Around 90% of this product sits behind an admin login, so a first-time visitor arriving at the public URL saw a registration form and nothing else — neither the review workflow the product exists for, nor the reasoning behind how it works. A **visibility layer** was added to close that gap without changing the product itself: **RSVP-8** (read-only admin demo) plus the **root landing** — the latter tracked as a non-story descriptive branch rather than a user story (decision 2026-07-22; see §9).
+Around 90% of this product sits behind an admin login, so a first-time visitor arriving at the public URL saw a registration form and nothing else — neither the review workflow the product exists for, nor the reasoning behind how it works. A **visibility layer** closes that gap without changing the product itself: a **read-only admin demo** and the **root landing**. Neither is a user story; see the non-story tracks at the end of §4.
 
 ---
 
@@ -44,7 +38,7 @@ Around 90% of this product sits behind an admin login, so a first-time visitor a
 | G2 | Organizers can review and approve/reject in batch | Organizer can process 50+ registrations in under 5 minutes | ✅ Shipped |
 | G3 | Approved attendees receive a unique QR code | QR renders on the status page immediately after approval | ✅ Shipped |
 | G4 | Organizers can verify and check in attendees on-site | Organizer can mark an approved attendee as checked-in from the admin view | ↪ Moved to Phase 2 (2026-07-07); QR verification-ready state shipped via RSVP-5 |
-| G5 *(v0.4)* | Reviewers can grasp the product and its decision trail from one URL | A non-technical reader states the product's purpose + two key decisions within 3 minutes; admin workflow visible without requesting credentials | 🔄 In progress — RSVP-8 ✅ Done; root landing on the non-story track (§9) |
+| G5 *(v0.4)* | A first-time visitor can grasp the product and its decision trail from one URL | A non-technical reader states the product's purpose + two key decisions within 3 minutes; admin workflow visible without requesting credentials | ✅ Shipped — read-only admin demo (2026-07-14) + root landing (2026-08-04) |
 | G6 *(v0.5)* | Attendees learn the review outcome without polling the status page | An approved / rejected attendee receives an email carrying the decision and their status-page link | 🔜 RSVP-7 |
 
 ### Non-Goals (Phase 1)
@@ -63,7 +57,7 @@ Around 90% of this product sits behind an admin login, so a first-time visitor a
 | Calendar integration | Nice-to-have, not critical to the registration-to-check-in flow |
 | Multi-event UI | Schema is multi-event ready; a single event is seeded; multi-event UI deferred |
 | Attendee account system | Attendees access status via a unique token URL — no login |
-| Story-page analytics / SEO | Out of scope per project-level exclusions (CLAUDE.md §8.9) |
+| Landing-page analytics / SEO | Out of scope per project-level exclusions (CLAUDE.md §8.9) |
 
 ---
 
@@ -170,7 +164,7 @@ Around 90% of this product sits behind an admin login, so a first-time visitor a
 
 > **As an** Organizer, **I want to** mark approved attendees as checked-in on-site, **so that** I can verify attendance quickly.
 
-**Status:** ↪ **Moved to Phase 2** (PM decision 2026-07-07). Rationale: the demo's goal is one core flow shipped end-to-end at 100%; check-in is not required for the reviewer-facing E2E story (register → review → status/QR). The QR already encodes the token status URL, so the future check-in flow (manual or scanner) plugs in without backend changes. AC preserved in §8 backlog for Phase 2 pickup.
+**Status:** ↪ **Moved to Phase 2** (PM decision 2026-07-07). Rationale: the demo's goal is one core flow shipped end-to-end at 100%; check-in is not required for the end-to-end story (register → review → status/QR). The QR already encodes the token status URL, so the future check-in flow (manual or scanner) plugs in without backend changes. AC preserved in §8 backlog for Phase 2 pickup.
 
 ---
 
@@ -178,9 +172,9 @@ Around 90% of this product sits behind an admin login, so a first-time visitor a
 
 > **As an** Attendee, **I want to** be emailed when my registration is approved or rejected, **so that** I learn the outcome without repeatedly re-opening my status page.
 
-> **Note on this key:** RSVP-7 previously carried a *Story Landing* story in v0.4. That story is
-> **removed as superseded** — the root landing is tracked as a non-story descriptive branch, not a
-> user story (decision 2026-07-22). Jira is canonical for keys; this PRD follows Jira. See §9.
+> **Note on this key:** v0.4 borrowed `RSVP-7` for a story-landing story. On the board `RSVP-7` is
+> email notifications and always was; the landing is a Task (RSVP-14), not a user story. Jira is
+> canonical for keys and this document follows it.
 
 **Acceptance Criteria** *(⚠️ drafted from the locked trade-offs below — reconcile against the Jira ticket before build)*
 - A notification email is sent on a **real status transition** (`pending → approved | rejected`), triggered from the existing write path (the `updateRegistrationsStatus` Server Action). The RSVP-4 idempotency rule governs sending too: a same-status no-op sends nothing
@@ -213,21 +207,44 @@ Around 90% of this product sits behind an admin login, so a first-time visitor a
 
 ---
 
-### RSVP-8 — Read-only Admin Demo (Reviewer) *(added in v0.4)*
+### Non-story tracks
 
-> **As a** Reviewer, **I want** one-click read-only access to the admin dashboard with seeded data, **so that** I can see the review workflow without requesting credentials.
+The visibility layer (§1) is not a user story. It changes nothing about what the product does for an
+organizer or an attendee, so it carries no `RSVP-n` story key — the two items below are Tasks.
+
+> **Key discipline.** `RSVP-7`, `RSVP-8`, and `RSVP-9` are email notifications, automated filter
+> rules, and calendar integration respectively. Earlier revisions of this document borrowed those
+> keys for visibility work; that is corrected here. Jira is canonical.
+
+#### Read-only admin demo — no ticket
+
+> One-click read-only access to the admin dashboard with seeded data, so a first-time visitor can
+> see the review workflow without requesting credentials.
 
 **Acceptance Criteria**
-- "Enter Admin Demo" on the story page signs in a dedicated demo user via a Server Action (credentials live only in server-side env) and lands on `/admin/registrations`
-- Demo user sees the seeded dataset (7 rows across pending / approved / rejected) and all filters
+- "Enter Admin Demo" on the landing signs in a dedicated demo user via a Server Action (credentials live only in server-side env) and lands on `/admin/registrations`
+- Demo user sees the seeded dataset (4 rows: 2 pending / 1 approved / 1 rejected) and all filters
 - Writes are denied **at the RLS layer** for the demo user (restrictive carve-out from the blanket `authenticated` UPDATE policy) — verified by a direct SQL/API write attempt, not only via UI
 - Demo session shows a banner: `Demo mode (read-only) — batch actions disabled. Seeded demo data.`; the batch action bar is disabled, not hidden
 - Real admin account behavior is unchanged
 - Demo credentials never enter the client bundle or the repo
 
-**Out of scope (this story):** interactive writes + data reset (Phase 2 sandbox) · separate demo dataset (reuses `supabase/seed.sql`)
+**Out of scope:** interactive writes plus data reset (Phase 2 sandbox) · a separate demo dataset (reuses `supabase/seed.sql`)
 
-**Status:** ✅ Done — merged 2026-07-14. `signInAsDemo` Server Action (`app/admin/login/actions.ts`), demo banner + disabled batch bar (`app/admin/registrations/page.tsx`), restrictive RLS carve-out (migration `20260711000000_rsvp8_demo_admin_readonly.sql`).
+**Status:** ✅ Shipped 2026-07-14. `signInAsDemo` Server Action (`app/admin/login/actions.ts`), demo banner and disabled batch bar (`app/admin/registrations/page.tsx`), restrictive RLS carve-out (migration `20260711000000_rsvp8_demo_admin_readonly.sql`).
+
+#### Root landing — RSVP-14 (Task)
+
+> A landing at `/` covering the problem, the core flow, and the decisions behind it, replacing the
+> previous redirect to `/register`.
+
+**Acceptance Criteria**
+- `/` renders, with no login: the problem framing, the core flow paired with product screenshots and the reasoning behind each step, the repository link, and the brand rationale
+- Primary CTA enters `/register`; a secondary CTA enters the read-only admin demo
+- Responsive at 390 / 768 / 1280 with no horizontal overflow
+- Entry motion is gated on `prefers-reduced-motion: no-preference`
+
+**Status:** ✅ Shipped 2026-08-04.
 
 ---
 
@@ -276,24 +293,24 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 - **Admin pages** (`/admin/*`) are gated by a Server Component check of the **Supabase session server-side**; RLS (authenticated-role SELECT/UPDATE policies **plus table-level GRANT** — both are required) is the enforcement layer at the DB boundary.
 - Authorization is kept **out of `proxy.ts`** per Next.js 16 guidance (proxy handles the login redirect UX only; RLS is the enforcement boundary).
 - **Grants are per-role:** the status RPC is granted to both `anon` and `authenticated` (2026-07-07 lesson: a logged-in admin opening a status page runs as `authenticated`, not `anon`).
-- **Demo user (RSVP-8):** the demo account is an `authenticated` user whose UPDATE/DELETE are denied by a restrictive RLS carve-out; read-only is enforced at the DB boundary, with the UI disabled state as presentation only.
+- **Demo user:** the read-only demo account is an `authenticated` user whose UPDATE/DELETE are denied by a restrictive RLS carve-out; read-only is enforced at the DB boundary, with the UI disabled state as presentation only.
 
 ---
 
 ## 6. Milestones
 
-| Milestone | Scope | Sprint / Actual |
-|-----------|-------|-----------------|
-| M0 — Discovery / Setup | PRD, user flow, Jira backlog, environment, first push | Sprint 0 (4/22–5/8) ✅ |
-| M1 — Build (paused mid-flight) | RSVP-3, RSVP-4 started | Sprint v2 (5/13–5/22), closed honestly at 0/4 shipped ✅ |
-| M2 — Recovery | RSVP-3 ✅ (6/3, RLS hardened) · RSVP-4 ✅ (6/11+) · RSVP-5 ✅ (accepted 7/7) · RSVP-6 ↪ Phase 2 (7/7) | Sprint v3 (6/2–6/16) + spillover, closed 7/7 |
-| M3 — Ship | Netlify production deploy, repo public, README | ✅ Live (`r-khiong-rsvp.netlify.app`) |
-| M4 — Visibility *(v0.4; scope restated in v0.5)* | RSVP-8 read-only demo ✅ + root landing (non-story track, in progress) + docs-in-repo ✅ + README sync ✅ | July 2026, then **freeze** (changes only on interview feedback) |
-| M5 — Notifications *(v0.5)* | RSVP-7 email notifications | Not scheduled — sits outside the M4 freeze; scheduled only if interview feedback calls for it |
+| Milestone | Scope | Outcome |
+|-----------|-------|---------|
+| M0 — Discovery | PRD, user flow, Jira backlog, environment, first push | ✅ Closed 2026-05-08 |
+| M1 — Build | RSVP-3 and RSVP-4 started | ⚠️ Closed unfinished at 0 of 4 stories, 2026-05-20 |
+| M2 — Recovery | RSVP-3 ✅ (6/3, RLS hardened) · RSVP-4 ✅ (6/11) · RSVP-5 ✅ (7/7) · RSVP-6 ↪ Phase 2 (7/7) | ✅ Closed 2026-07-07 |
+| M3 — Ship | Netlify production deploy, public repository, README | ✅ Closed 2026-07-10 (`r-khiong-rsvp.netlify.app`) |
+| M4 — Visibility | Read-only admin demo ✅ (7/14) · root landing ✅ (8/4, RSVP-14) · docs in repo ✅ · brand system ✅ | 🔄 Admin console redesign and artifact-chain alignment remain |
+| M5 — Notifications | RSVP-7 email notifications | Not scheduled |
 
-> Sprint v2 was paused by a pre-scheduled trip (5/23–5/31). Rather than retroactively
-> extending its dates (a ScrumBut anti-pattern that distorts velocity), it was closed
-> with honest reporting; unfinished tickets carried into Sprint v3, labelled Recovery.
+> **M1 closed unfinished on purpose.** A pre-scheduled trip (5/23–5/31) interrupted it. Retroactively
+> extending the sprint dates would have distorted velocity and stripped the retrospective of its
+> value, so it was closed as-is and the work carried into M2 as an explicitly labelled recovery.
 
 ---
 
@@ -304,15 +321,15 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | OQ-1 | Custom (organizer-defined) form fields? | Deferred to Phase 3 |
 | OQ-2 | Organizer authentication method? | ✅ Resolved — Supabase Auth (single admin MVP) |
 | OQ-3 | Dedicated QR scan page vs visual check? | Scanner → Phase 2 (with RSVP-6) |
-| OQ-4 | Multi-language (EN / ZH)? | English-only throughout (OQ-9); i18n → Phase 3 |
+| OQ-4 | Multi-language support? | ✅ Resolved — out of Phase 1; i18n → Phase 3 |
 | OQ-5 | Single vs multi-event? | ✅ Resolved — multi-event schema, single event seeded, multi-event UI deferred |
 | OQ-6 | Keyword search in dashboard? | Deferred to Phase 2 (status filter only for MVP) |
 | OQ-7 | CSV export? | Phase 2 |
 | OQ-8 | Inline Remark editing in dashboard? | Phase 2 (MVP shows Remark read-only) |
-| OQ-9 *(v0.4)* | Landing page language? | ✅ Resolved 2026-08-27 — English throughout. Supersedes the 2026-07-10 resolution (Chinese body, English UI terms); see `docs/decision-log.md` Amendments |
+| OQ-9 *(v0.4)* | Landing page language? | ✅ Resolved — English |
 | OQ-10 *(v0.4)* | Where do product docs live? | ✅ Resolved 2026-07-10 — in-repo `docs/` (git history = version trail); Notion keeps private material only |
+| OQ-11 *(v0.4)* | Read-only demo vs interactive sandbox? | ✅ Resolved 2026-07-10 — read-only for Phase 1; a sandbox with data reset stays in the Phase 2 backlog |
 | OQ-12 *(v0.6)* | Event information source — how `events` and `lib/event.ts` divide responsibility | Open — resolves with RSVP-7, which is the first story to read event metadata outside `/register` |
-| OQ-11 *(v0.4)* | Read-only demo vs interactive sandbox? | ✅ Resolved 2026-07-10 — read-only for Phase 1; sandbox with reset stays in the Phase 2 backlog. The batch-action GIF that accompanied this decision was cancelled 2026-08-03 and never shipped (see `docs/decision-log.md` Amendments) |
 
 ---
 
@@ -347,9 +364,9 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | v0.1 | 2026-04-16 | Initial draft. 5-field form incl. Business Card upload; 4 status states; QR scan as stretch goal |
 | v0.2 | 2026-05-07 | Supabase Auth added to MVP; scan page brought into MVP; Jira board + AC built |
 | v0.3 | 2026-06-06 | Dashboard columns realigned to built schema; Business Card upload removed; organizer auth resolved to Supabase Auth; on-site check-in confirmed manual (scanner → Phase 1.5); status filter kept, free-text search → Phase 2; multi-event clarified (schema-ready, single-event UI); idempotent / reversible batch rule and `select-all = current page` documented |
-| **v0.4** | **2026-07-10** | RSVP-4/5 marked **Done**, AC realigned to as-built: **batch-only pivot (2026-06-09)** documented — per-row buttons removed; `registrations.name` (not `full_name`); **no pagination in MVP** (moved to Phase 2). RSVP-6 **moved to Phase 2** (2026-07-07). Added **Reviewer persona**, **G5**, **RSVP-7 Story Landing**, **RSVP-8 Read-only Admin Demo**. Security model: per-role grant lesson (7/7) + demo-user restrictive carve-out. Docs moved into repo (`docs/`); OQ-9/10/11 resolved. M4 Visibility milestone + post-M4 freeze |
-| **v0.6** | **2026-08-27** | **Editorial revision; no scope change.** Document converted to English throughout. §1 *Portfolio Layer* restated as the **Visibility Layer** and the §3 *Reviewer* persona as the **First-time visitor** — same product problem, stated from the product's side rather than from an evaluator's. **OQ-9 re-resolved**: English throughout, superseding the 2026-07-10 language split (see `docs/decision-log.md` Amendments). OQ-11 corrected — the batch-action GIF was cancelled 2026-08-03 and never shipped. Abbreviation `PjM` normalised to `PM`. Scope held to language and framing; no status field or milestone entry is restated. |
-| **v0.5** | **2026-07-28** | **RSVP-7 realigned to Jira as Email Notifications.** The v0.4 *RSVP-7 Story Landing* story is **removed as superseded** — the root landing is a **non-story track (descriptive branch)**, not a user story (decision **2026-07-22**); Jira is canonical for keys and this PRD follows Jira. Trade-offs (a) single-event scope / (b) no per-record resend, failures log-only → Phase 1.5 / (c) no `status` enum extension, send state as a nullable timestamp — locked by PM. **RSVP-8 → Done** (merged 2026-07-14). Email removed from §2 Non-Goals and from the §8 backlog (**SMS stays deferred**); new **Phase 1.5** bucket for resend. Added **G6**, **M5 — Notifications**, and provisional `registrations.notified_at` to the §5 data model. *Supersedes draft revisions discussed 2026-07-22/23 (chat-side); remaining content port tracked separately.* Open: RSVP-7 AC awaits reconciliation against the Jira ticket; event information source `TBD — pending PM decision` |
+| **v0.4** | **2026-07-10** | RSVP-4/5 marked **Done** and their AC realigned to as-built: the **batch-only pivot (2026-06-09)** documented — per-row buttons removed; `registrations.name`, not `full_name`; **no pagination in MVP** (→ Phase 2). RSVP-6 **moved to Phase 2** (2026-07-07). Added the first-time-visitor persona, **G5**, and the visibility layer. Security model extended with the per-role grant lesson and the demo-user restrictive carve-out. Product docs moved into the repo; OQ-9/10/11 resolved |
+| **v0.5** | **2026-07-28** | **RSVP-7 realigned to Jira as Email Notifications**, superseding the v0.4 use of that key for the root landing — Jira is canonical for keys and this PRD follows it. Three trade-offs locked by the PM: single-event scope; no per-record resend, failures log-only (→ Phase 1.5); no `status` enum extension, send state carried by a nullable timestamp. Email removed from §2 Non-Goals and from the §8 backlog (SMS stays deferred). Added **G6**, **M5 — Notifications**, and `registrations.notified_at` to the §5 data model |
+| **v0.6** | **2026-08-27** | **No scope change.** Milestone table restated against what actually shipped: the read-only admin demo and the root landing are recorded as Tasks rather than user stories, correcting the earlier borrowing of the RSVP-7/8 keys. The root landing is marked shipped (2026-08-04) and tracked as RSVP-14. Seed dataset corrected to 4 rows. OQ-12 opened for the event-information source |
 
 ---
 
@@ -402,10 +419,10 @@ Out of Scope:
 * Registration-received (pre-decision) confirmation email
 ```
 
-**RSVP-8 — Read-only Admin Demo**
+**Read-only admin demo — Task, no ticket**
 ```
-* Story-page CTA signs in dedicated demo user via Server Action (creds in server env only)
-* Lands on /admin/registrations with seeded data (7 rows, three statuses) + filters
+* Landing CTA signs in dedicated demo user via Server Action (creds in server env only)
+* Lands on /admin/registrations with seeded data (4 rows, three statuses) + filters
 * Demo user writes denied at RLS layer (restrictive carve-out on authenticated UPDATE);
   verified by direct SQL/API write attempt, not only UI
 * Banner: "Demo mode (read-only) — batch actions disabled. Seeded demo data."
