@@ -17,9 +17,9 @@ export default async function RegistrationsPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/admin/login");
 
-  // RSVP-8: demo session detection stays server-side — the email comparison
-  // and the env var never reach the client. UI below is presentation only;
-  // the real write ban is the restrictive RLS policy (rsvp8 migration).
+  // Demo session detection stays server-side — the email comparison and the
+  // env var never reach the client. UI below is presentation only; the real
+  // write ban is the restrictive RLS policy (20260711000000 migration).
   const isDemo =
     !!process.env.DEMO_ADMIN_EMAIL &&
     user.email === process.env.DEMO_ADMIN_EMAIL;
@@ -39,7 +39,7 @@ export default async function RegistrationsPage({
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2 font-semibold">
           <CalendarCheck className="h-5 w-5" />
-          <span className="text-lg">RSVP</span>
+          <span className="text-lg">és&apos;ilî</span>
         </div>
         <div className="flex items-center gap-4">
           <span className="text-sm text-muted-foreground">{user.email}</span>

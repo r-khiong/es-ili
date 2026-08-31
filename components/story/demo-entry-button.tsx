@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { signInAsDemo } from "@/app/admin/login/actions";
 
-// Story-page CTA into the read-only admin demo (RSVP-8). Same failure-branch
+// Landing CTA into the read-only admin demo. Same failure-branch
 // pattern as the login page: on success the server action redirects, so this
 // component only ever renders the error state. Styled as the landing's
 // secondary button (mockup .btn-ghost-l).

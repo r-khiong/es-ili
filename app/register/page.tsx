@@ -113,7 +113,7 @@ export default function RegisterPage() {
       <nav className="flex items-center justify-between border-b border-white/10 px-[34px] py-[18px]">
         <Image
           src="/brand/mark-primary-dark.svg"
-          alt="RSVP"
+          alt="és'ilî"
           width={30}
           height={32}
           priority
@@ -238,10 +238,9 @@ export default function RegisterPage() {
           </div>
 
           <p className="mt-7 text-[11.5px] leading-[1.7] text-[#9E9E9E]">
-            By submitting this form you agree this is a portfolio demo site. The
-            details you enter are used only to review this demo registration,
-            are never shared with third parties or used for marketing, and are
-            cleared periodically.
+            By submitting this form you agree this is a demo site. The details
+            you enter are used only to review this demo registration and are
+            never shared with third parties or used for marketing.
           </p>
 
           <div className="mt-[26px]">
