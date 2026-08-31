@@ -39,9 +39,10 @@ product documentation in the repo.
 - Registration submitted as `anon` instead of inheriting an admin session, and error codes surfaced
   in the UI. A browser that had opened the admin console was hitting `42501` on `/register` while
   anonymous visitors were unaffected — hidden for 12 days by generic error copy
-- Landing nav logo returns to the top of the page, honouring `prefers-reduced-motion`. The v9
-  landing shipped the monogram as a static mark, leaving a visitor who reached the footer no
-  way back up
+- Landing nav logo returns to the top of the page when clicked, honouring
+  `prefers-reduced-motion`. The v9 landing shipped the monogram as a static image with no
+  interactive affordance — no pointer, no hover, no focus ring — so it read as decoration.
+  The header is not sticky, so the mark is reachable only while it is still in view
 
 ---
 
