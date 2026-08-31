@@ -39,6 +39,9 @@ product documentation in the repo.
 - Registration submitted as `anon` instead of inheriting an admin session, and error codes surfaced
   in the UI. A browser that had opened the admin console was hitting `42501` on `/register` while
   anonymous visitors were unaffected — hidden for 12 days by generic error copy
+- Landing nav logo returns to the top of the page, honouring `prefers-reduced-motion`. The v9
+  landing shipped the monogram as a static mark, leaving a visitor who reached the footer no
+  way back up
 
 ---
 
