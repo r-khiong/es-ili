@@ -326,7 +326,7 @@ Phase 2 adds: `approved → checked_in` + `checked_in_at` column.
 | OQ-6 | Keyword search in dashboard? | Deferred to Phase 2 (status filter only for MVP) |
 | OQ-7 | CSV export? | Phase 2 |
 | OQ-8 | Inline Remark editing in dashboard? | Phase 2 (MVP shows Remark read-only) |
-| OQ-9 *(v0.4)* | Landing page language? | ✅ Resolved — English |
+| OQ-9 *(v0.4)* | Landing page language? | ✅ Resolved — Chinese narrative copy with English UI terms; the product UI itself is English throughout |
 | OQ-10 *(v0.4)* | Where do product docs live? | ✅ Resolved 2026-07-10 — in-repo `docs/` (git history = version trail); Notion keeps private material only |
 | OQ-11 *(v0.4)* | Read-only demo vs interactive sandbox? | ✅ Resolved 2026-07-10 — read-only for Phase 1; a sandbox with data reset stays in the Phase 2 backlog |
 | OQ-12 *(v0.6)* | Event information source — how `events` and `lib/event.ts` divide responsibility | Open — resolves with RSVP-7, which is the first story to read event metadata outside `/register` |
