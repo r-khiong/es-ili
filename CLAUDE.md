@@ -166,7 +166,7 @@ Conventional commits: `<type>(<scope>): <subject>`
 
 **Scope names a section of the codebase — never a tracking identifier.** Conventional Commits
 requires a noun describing a part of the tree, so a Jira key, a sprint, a milestone, or a mockup
-version is never a scope. The list below is closed; a word outside it is not used.
+version is never a scope. Both lists below are closed; a word outside them is not used.
 
 | Scope | Covers |
 |---|---|
@@ -177,13 +177,26 @@ version is never a scope. The list below is closed; a word outside it is not use
 | `db` | `supabase/`, `lib/supabase/` |
 | `brand` | `components/brand/`, `public/brand/`, favicon and OG assets, `app/layout.tsx`, `app/globals.css` |
 | `ui` | `components/ui/` (the shadcn base) |
-| `config` | shared `lib/` modules, build, deploy, and repo plumbing |
-| `docs` | `docs/`, `README.md`, `CHANGELOG.md`, `CLAUDE.md` |
+| `config` | shared `lib/` modules, build, deploy, and repo plumbing, including the generated `AGENTS.md` |
 
 **Omit the scope when the change has no primary surface.** Around a fifth of this repo's commits
 genuinely span several surfaces — a rename, a token change, a font swap. Conventional Commits makes
 scope optional for exactly that case, and picking one surface out of five states something untrue.
 A shared component inherits the scope of the page the change was made for.
+
+**A `docs` commit scopes the document, not the code.** `docs` is a type, so repeating it as a
+scope says nothing. The document being changed is the useful word, and these five are the whole set:
+
+| Scope | Document |
+|---|---|
+| `prd` | `docs/PRD.md` |
+| `log` | `docs/decision-log.md` |
+| `changelog` | `CHANGELOG.md` |
+| `readme` | `README.md` |
+| `claude` | `CLAUDE.md` |
+
+A `feat` or `fix` that also updates documentation — required by §6.2 — keeps the product scope. The
+document scopes above belong to `docs` commits alone.
 
 **Story keys go in a footer trailer, not in the scope:**
 
