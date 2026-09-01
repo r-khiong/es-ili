@@ -138,7 +138,7 @@ commit message or the chat report. Do not propose options up front.
 Example:
 
 ```
-chore: init shadcn/ui with radix base (preset=base-nova)
+chore(ui): init shadcn/ui with radix base (preset=base-nova)
 
 Self-decided implementation details:
 - CLI flags: --template=next --preset=base-nova --base=radix --no-monorepo
@@ -162,23 +162,69 @@ Conventional commits: `<type>(<scope>): <subject>`
 | `docs` | Documentation changes |
 | `style` | Pure styling changes with no logic |
 
-Scope maps to a user story (for example `rsvp-3`) or a module (`auth`, `admin`). **Never reuse a
-story key for work that does not belong to that story — see §9.3.**
+### 4.2 Scope vocabulary
 
-### 4.2 Granularity
+**Scope names a section of the codebase — never a tracking identifier.** Conventional Commits
+requires a noun describing a part of the tree, so a Jira key, a sprint, a milestone, or a mockup
+version is never a scope. Both lists below are closed; a word outside them is not used.
+
+| Scope | Covers |
+|---|---|
+| `landing` | `app/page.tsx`, `components/story/`, `public/story/` |
+| `register` | `app/register/`, `lib/validations/register.ts` |
+| `status` | `app/status/`, `components/status/` |
+| `admin` | `app/admin/`, `components/admin/`, `lib/validations/login.ts`, `proxy.ts` |
+| `db` | `supabase/`, `lib/supabase/` |
+| `brand` | `components/brand/`, `public/brand/`, favicon and OG assets, `app/layout.tsx`, `app/globals.css` |
+| `ui` | `components/ui/` (the shadcn base) |
+| `config` | shared `lib/` modules, build, deploy, and repo plumbing, including the generated `AGENTS.md` |
+
+**Omit the scope when the change has no primary surface.** Around a fifth of this repo's commits
+genuinely span several surfaces — a rename, a token change, a font swap. Conventional Commits makes
+scope optional for exactly that case, and picking one surface out of five states something untrue.
+A shared component inherits the scope of the page the change was made for.
+
+**A `docs` commit scopes the document, not the code.** `docs` is a type, so repeating it as a
+scope says nothing. The document being changed is the useful word, and these five are the whole set:
+
+| Scope | Document |
+|---|---|
+| `prd` | `docs/PRD.md` |
+| `log` | `docs/decision-log.md` |
+| `changelog` | `CHANGELOG.md` |
+| `readme` | `README.md` |
+| `claude` | `CLAUDE.md` |
+
+A `feat` or `fix` that also updates documentation — required by §6.2 — keeps the product scope. The
+document scopes above belong to `docs` commits alone.
+
+**Story keys go in a footer trailer, not in the scope:**
+
+```
+feat(admin): add batch approve/reject to the registrations list
+
+Self-decided implementation details:
+- optimistic UI update, rollback on error
+
+Refs: RSVP-4
+```
+
+Register a new scope in the table above before using it.
+
+### 4.3 Granularity
 
 **One commit per task.** Do not roll several tasks into a mega-commit.
 
 Reason: the commit history is the record of how the work was decomposed. Rolled-up commits destroy
 that record and make a single change impossible to revert on its own.
 
-### 4.3 Commit message rules
+### 4.4 Commit message rules
 
 - Subject: short, present tense (`add`, `migrate`, `init`). Never past tense
 - Body: list the "Self-decided implementation details" bullets (see §3.3)
 - If a decision was escalated to the PM, note it in the body as `PM decision: <one line>`
 
-### 4.4 History discipline
+### 4.5 History discipline
 
 - Do not use `--amend`
 - Do not rewrite pushed history
@@ -475,6 +521,8 @@ and must not be written into any document in this repo.
 - Jira is the only authority for what a story key means. Locked: `RSVP-7` = email notifications,
   `RSVP-8` = automated filter rules, `RSVP-9` = calendar integration.
 - **Those three keys must not be borrowed** for landing, demo, infrastructure, or documentation work.
+  A story key never appears as a commit scope at all — see §4.2; when a commit does belong to a
+  tracked story, the key goes in a `Refs:` footer.
 - Non-story work uses a descriptive branch name (for example `feat/root-landing-redesign`,
   `feat/admin-v9-redesign`). If it needs status tracking, open a separate Task ticket rather than
   reusing an existing story key.
