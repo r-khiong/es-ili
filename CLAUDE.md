@@ -211,7 +211,6 @@ Refs: RSVP-4
 
 Register a new scope in the table above before using it.
 
-
 ### 4.3 Granularity
 
 **One commit per task.** Do not roll several tasks into a mega-commit.
